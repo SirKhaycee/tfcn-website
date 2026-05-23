@@ -22,6 +22,7 @@
   @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-12px); } }
   @keyframes ticker { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
   @keyframes pulse-dot { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+  @keyframes ticker-rev { 0% { transform: translateX(-50%); } 100% { transform: translateX(0); } }
   .animate-fadeUp { animation: fadeUp 0.9s cubic-bezier(0.16, 1, 0.3, 1) forwards; opacity: 0; }
   .animate-float { animation: float 6s ease-in-out infinite; }
   .animate-pulse-dot { animation: pulse-dot 2s ease-in-out infinite; }
@@ -34,7 +35,7 @@
   .scroll-reveal.in-view { opacity: 1; transform: translateY(0); }
   .hover-lift { transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
   .hover-lift:hover { transform: translateY(-6px); }
-  .magnetic-btn { position: relative; overflow: hidden; transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
+  .magnetic-btn { position: relative; overflow: hidden; border-radius: 9999px; transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
   .magnetic-btn::before { content: ''; position: absolute; inset: 0; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent); transform: translateX(-100%); transition: transform 0.6s; }
   .magnetic-btn:hover::before { transform: translateX(100%); }
   .faq-content { max-height: 0; overflow: hidden; transition: max-height 0.5s cubic-bezier(0.16, 1, 0.3, 1); }
@@ -187,7 +188,7 @@ function App() {
             <a href="#host" className="hidden md:block text-sm font-medium text-[#0A0A0A]/60 hover:text-[#0A0A0A] px-4 py-2 transition">Convener</a>
             <a href="#tickets" className="hidden md:block text-sm font-medium text-[#0A0A0A]/60 hover:text-[#0A0A0A] px-4 py-2 transition">Tickets</a>
             <a href="#faq" className="hidden md:block text-sm font-medium text-[#0A0A0A]/60 hover:text-[#0A0A0A] px-4 py-2 transition">FAQ</a>
-            <a href="#register" className="inline-flex items-center gap-1.5 bg-[#0A0A0A] text-white px-4 py-2.5 text-xs sm:text-sm font-semibold hover:bg-[#E05A1A] transition-all duration-300">
+            <a href="#register" className="inline-flex items-center gap-1.5 bg-[#0A0A0A] text-white px-5 py-2.5 text-xs sm:text-sm font-semibold rounded-full hover:bg-[#E05A1A] transition-all duration-300">
               Register <Icon name="arrow" size={12}/>
             </a>
           </div>
@@ -212,24 +213,30 @@ function App() {
             <div style={{ fontSize: 'clamp(48px, 9vw, 110px)' }} className="-mt-1 lg:-mt-2">finance gathering.</div>
           </h1>
 
-          {/* Theme thread */}
-          <div className="animate-fadeUp delay-200 flex items-center gap-4 mb-7">
-            <div className="w-10 h-px bg-[#E05A1A]"></div>
-            <span className="text-[10px] sm:text-xs font-bold tracking-[0.2em] uppercase text-[#0A0A0A]/50">2026 Theme</span>
-            <span className="serif italic text-xl sm:text-2xl text-[#E05A1A] font-normal leading-none">The Old Taker</span>
+          {/* Theme marquee */}
+          <div className="animate-fadeUp delay-200 overflow-hidden mb-8 py-1" style={{ WebkitMaskImage: 'linear-gradient(to right, transparent, black 8%, black 92%, transparent)', maskImage: 'linear-gradient(to right, transparent, black 8%, black 92%, transparent)' }}>
+            <div className="flex" style={{ animation: 'ticker-rev 32s linear infinite', whiteSpace: 'nowrap' }}>
+              {[...Array(8)].map((_, i) => (
+                <span key={i} className="shrink-0 inline-flex items-center gap-5 pr-10">
+                  <span className="serif italic text-[#E05A1A] font-normal" style={{ fontSize: 'clamp(20px, 3vw, 32px)' }}>The Old Taker</span>
+                  <span className="text-[9px] font-bold tracking-[0.35em] uppercase text-[#0A0A0A]/25">2026 Theme</span>
+                  <span className="text-[#E05A1A]/40 text-xs">◆</span>
+                </span>
+              ))}
+            </div>
           </div>
 
           {/* Sub copy */}
           <div className="animate-fadeUp delay-300 max-w-xl mb-10">
-            <p className="text-base sm:text-lg text-[#0A0A0A]/65 leading-relaxed">Don't become the person who says <em>"I used to have..."</em> Join the operators who read cycles and build wealth that survives them.</p>
+            <p className="text-base sm:text-lg text-[#0A0A0A]/75 leading-relaxed font-medium">Seats are limited. Free access is curated, apply and be reviewed. <span className="text-[#E05A1A]">Premium is instant</span> and filling fast.</p>
           </div>
 
           {/* CTAs */}
-          <div className="animate-fadeUp delay-300 flex flex-wrap gap-3 mb-16">
-            <a href="#register" className="magnetic-btn inline-flex items-center gap-2 bg-[#0A0A0A] text-white px-6 sm:px-7 py-4 text-sm font-semibold hover:bg-[#E05A1A] transition-all duration-300">
+          <div className="animate-fadeUp delay-300 flex flex-col sm:flex-row gap-3 mb-16">
+            <a href="#register" className="magnetic-btn inline-flex items-center justify-center gap-2 bg-[#0A0A0A] text-white px-7 py-4 text-sm font-semibold hover:bg-[#E05A1A] transition-all duration-300">
               Apply for Free Tier <Icon name="arrow" size={14}/>
             </a>
-            <a href="#tickets" className="inline-flex items-center gap-2 border border-[#0A0A0A]/20 text-[#0A0A0A] px-6 sm:px-7 py-4 text-sm font-semibold hover:bg-[#0A0A0A] hover:text-white hover:border-[#0A0A0A] transition-all duration-300">Get Premium</a>
+            <a href="#tickets" className="inline-flex items-center justify-center gap-2 border border-[#0A0A0A]/20 text-[#0A0A0A] px-7 py-4 text-sm font-semibold rounded-full hover:bg-[#0A0A0A] hover:text-white hover:border-[#0A0A0A] transition-all duration-300">Get Premium</a>
           </div>
 
           {/* Stat bar */}
@@ -276,7 +283,7 @@ function App() {
                 <p>Every year, we explore a new theme that cuts to the core of what it means to build and sustain wealth in a world of endless noise.</p>
                 <p className="text-[#0A0A0A]/60">No fluff. No motivational theatre. Just the patterns of those who have seen empires rise, markets fall, and wealth quietly compound through cycles.</p>
               </div>
-              <a href="#register" className="mt-10 inline-flex items-center gap-2 bg-[#0A0A0A] text-white px-7 py-4 text-sm font-semibold hover:bg-[#E05A1A] transition-all duration-300">
+              <a href="#register" className="mt-10 inline-flex items-center gap-2 bg-[#0A0A0A] text-white px-7 py-4 text-sm font-semibold rounded-full hover:bg-[#E05A1A] transition-all duration-300">
                 Register for 2026 <Icon name="arrow" size={14}/>
               </a>
             </div>
@@ -471,7 +478,7 @@ function App() {
                   </li>
                 ))}
               </ul>
-              <a href="#register" className="block w-full text-center py-4 text-sm font-semibold tracking-tight bg-[#0A0A0A] text-white hover:bg-[#E05A1A] transition-all duration-300">
+              <a href="#register" className="block w-full text-center py-4 text-sm font-semibold tracking-tight bg-[#0A0A0A] text-white rounded-2xl hover:bg-[#E05A1A] transition-all duration-300">
                 <span className="inline-flex items-center gap-2">Apply for Free Tier <Icon name="arrow" size={12}/></span>
               </a>
             </div>
@@ -508,7 +515,7 @@ function App() {
                   </li>
                 ))}
               </ul>
-              <a href="#register" className="block w-full text-center py-4 text-sm font-semibold tracking-tight bg-[#E05A1A] text-white hover:bg-white hover:text-[#0A0A0A] transition-all duration-300">
+              <a href="#register" className="block w-full text-center py-4 text-sm font-semibold tracking-tight bg-[#E05A1A] text-white rounded-2xl hover:bg-white hover:text-[#0A0A0A] transition-all duration-300">
                 <span className="inline-flex items-center gap-2">Get Premium Now <Icon name="arrow" size={12}/></span>
               </a>
             </div>
@@ -530,7 +537,7 @@ function App() {
           <p className="text-sm sm:text-base text-[#0A0A0A]/60 leading-relaxed mb-12 max-w-2xl mx-auto">
             This is more than sponsorship. It's <strong className="text-[#0A0A0A] font-semibold">partnership for lasting impact</strong>, where your presence aligns you with the operators building Africa's financial future.
           </p>
-          <a href="mailto:partners@tfcn.network" className="inline-flex items-center gap-2 bg-[#0A0A0A] text-white px-8 py-4 text-sm font-semibold hover:bg-[#E05A1A] transition-all duration-300">
+          <a href="mailto:partners@tfcn.network" className="inline-flex items-center gap-2 bg-[#0A0A0A] text-white px-8 py-4 text-sm font-semibold rounded-full hover:bg-[#E05A1A] transition-all duration-300">
             Request Sponsorship Deck <Icon name="arrow" size={14}/>
           </a>
         </div>
@@ -597,7 +604,7 @@ function App() {
                     </select>
                   </div>
                   <Input label="Organization (Optional)" value={form.org} onChange={(v) => setForm({...form, org: v})} placeholder="Where do you work or invest?"/>
-                  <button type="submit" className="mt-5 w-full bg-[#0A0A0A] text-white py-5 text-sm font-semibold tracking-tight hover:bg-[#E05A1A] transition-all duration-300 inline-flex items-center justify-center gap-2">
+                  <button type="submit" className="mt-5 w-full bg-[#0A0A0A] text-white py-5 text-sm font-semibold tracking-tight rounded-2xl hover:bg-[#E05A1A] transition-all duration-300 inline-flex items-center justify-center gap-2">
                     {form.tier === 'Premium Tier: ₦75,000 (Instant)' ? 'Proceed to Payment' : 'Submit Application'} <Icon name="arrow" size={14}/>
                   </button>
                   <p className="text-xs text-[#0A0A0A]/40 text-center mt-4">Premium tier holders skip the queue. Free tier applications reviewed within 5 days.</p>
@@ -623,7 +630,7 @@ function App() {
             "Don't become the person<br/>who says <span className="text-[#E05A1A]">'I used to have...'</span>"
           </p>
           <p className="text-base sm:text-lg text-white/60 mb-12 max-w-2xl mx-auto">TFCN 2026 · The Old Taker · 25 July · Lagos</p>
-          <a href="#register" className="inline-flex items-center gap-2 bg-[#E05A1A] text-white px-8 py-5 text-sm font-bold tracking-[0.1em] uppercase hover:bg-white hover:text-[#0A0A0A] transition-all duration-300">
+          <a href="#register" className="inline-flex items-center gap-2 bg-[#E05A1A] text-white px-8 py-5 text-sm font-bold tracking-[0.1em] uppercase rounded-full hover:bg-white hover:text-[#0A0A0A] transition-all duration-300">
             Secure Your Seat <Icon name="arrow" size={14}/>
           </a>
         </div>
