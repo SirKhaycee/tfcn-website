@@ -79,7 +79,7 @@ function Logo({ size = 32 }) {
 }
 
 function Countdown() {
-  const target = new Date('2026-07-25T09:00:00');
+  const target = new Date('2026-07-23T09:00:00');
   const [t, setT] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
   useEffect(() => {
     const tick = () => {
@@ -158,7 +158,7 @@ function App() {
 
   const faqs = [
     { q: 'What is TFCN 2026?', a: 'The Finance Cycle Network is a curated annual gathering bringing together Africa\'s sharpest financial minds, operators, and capital allocators. The 2026 edition is themed "The Old Taker", exploring the mindset of those who read cycles and take wealth before the crowd notices.' },
-    { q: 'When and where is the event?', a: 'TFCN 2026 holds on 25th July 2026 in Lagos, Nigeria. The full venue details will be shared with confirmed attendees closer to the date.' },
+    { q: 'When and where is the event?', a: 'TFCN 2026 holds on 23rd July 2026 in Lagos, Nigeria. The full venue details will be shared with confirmed attendees closer to the date.' },
     { q: 'Why is the Free Tier application-based?', a: 'We curate the room intentionally. To preserve the quality of conversations and networking, free admission requires a short application so we can ensure every attendee adds to the experience. Premium tier holders skip this and get instant access.' },
     { q: 'What\'s the difference between Free and Premium?', a: 'Free Tier gets you into the main event with full session access. Premium Tier (₦75,000) gives you instant approved entry, a premium meal, welcome cocktail, access to the private speakers & host lounge, full HD recordings, lifetime alumni group access, and the exclusive TFCN playbook with reading lists and frameworks.' },
     { q: 'How do I get my Premium ticket?', a: 'Premium is instant access. You select the Premium Tier, complete payment, and you\'re confirmed immediately, no application or waiting period.' },
@@ -230,7 +230,7 @@ function App() {
           {/* Stat bar */}
           <div className="animate-fadeUp delay-500 grid grid-cols-2 lg:grid-cols-4 gap-px bg-[#0A0A0A]/10 border border-[#0A0A0A]/10">
             {[
-              { icon: 'calendar', label: 'Date', value: '25 July 2026' },
+              { icon: 'calendar', label: 'Date', value: '23 July 2026' },
               { icon: 'pin', label: 'Location', value: 'Lagos, Nigeria' },
               { icon: 'users', label: 'Format', value: 'Free + Premium' },
               { icon: 'trend', label: 'Edition', value: '3.0: Old Taker' },
@@ -249,7 +249,7 @@ function App() {
         <div className="ticker">
           {[...Array(2)].map((_, i) => (
             <div key={i} className="flex items-center gap-10 px-5 shrink-0">
-              {['TFCN 2026', '◆', 'EDITION 3.0', '◆', 'LAGOS · 25 JULY 2026', '◆', '2026 THEME: THE OLD TAKER', '◆', 'CAPITAL · CLARITY · CYCLES', '◆'].map((text, j) => (
+              {['TFCN 2026', '◆', 'EDITION 3.0', '◆', 'LAGOS · 23 JULY 2026', '◆', '2026 THEME: THE OLD TAKER', '◆', 'CAPITAL · CLARITY · CYCLES', '◆'].map((text, j) => (
                 <span key={j} className={`text-xs sm:text-sm font-bold tracking-[0.2em] uppercase shrink-0 ${text === '◆' ? 'text-[#E05A1A]' : 'text-white'}`}>{text}</span>
               ))}
             </div>
@@ -421,7 +421,7 @@ function App() {
             <div className="lg:col-span-5 scroll-reveal">
               <div className="flex items-center gap-2 mb-6"><div className="w-8 h-px bg-[#E05A1A]"></div><span className="text-[10px] sm:text-xs font-bold tracking-[0.25em] uppercase text-[#E05A1A]">Countdown</span></div>
               <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-[-0.04em] leading-[0.95]">The cycle<br/><span className="serif italic font-normal text-[#E05A1A]">starts soon.</span></h2>
-              <p className="text-base text-white/60 mt-5 max-w-md">July 25, 2026. Lagos. The room that reads the cycle first.</p>
+              <p className="text-base text-white/60 mt-5 max-w-md">July 23, 2026. Lagos. The room that reads the cycle first.</p>
             </div>
             <div className="lg:col-span-7 scroll-reveal">
               <Countdown/>
@@ -602,7 +602,7 @@ function App() {
                   <div className="w-16 h-16 bg-[#E05A1A] flex items-center justify-center mb-7"><Icon name="check" size={28} strokeWidth={3} className="text-white"/></div>
                   <h3 className="text-4xl sm:text-5xl font-bold tracking-[-0.04em] mb-5">You're <span className="serif italic font-normal text-[#E05A1A]">in.</span></h3>
                   <p className="text-base sm:text-lg text-white/70 leading-relaxed mb-7">Welcome to TFCN 2026. We've received your submission and will be in touch via email shortly.</p>
-                  <p className="text-xs sm:text-sm text-white/40 tracking-[0.1em] uppercase">See you in Lagos, 25 July 2026. The TFCN Team</p>
+                  <p className="text-xs sm:text-sm text-white/40 tracking-[0.1em] uppercase">See you in Lagos, 23 July 2026. The TFCN Team</p>
                 </div>
               )}
             </div>
@@ -642,7 +642,7 @@ function App() {
               <div className="text-xs font-bold tracking-[0.2em] uppercase text-[#E05A1A] mb-4">Event</div>
               <ul className="space-y-3 text-sm text-white/60">
                 <li>TFCN 2026: The Old Taker</li>
-                <li>25 July 2026</li>
+                <li>23 July 2026</li>
                 <li>Lagos, Nigeria</li>
                 <li>Convener: Sir K.C Onyekachi</li>
               </ul>
