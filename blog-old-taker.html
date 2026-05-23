@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Old Taker: Understanding the 2026 Theme | TFCN Blog</title>
+<link rel="icon" type="image/svg+xml" href="tfcn-logo.svg">
+<link rel="icon" type="image/png" href="tfcn-logo.png">
+<script src="https://cdn.tailwindcss.com"></script>
+<script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+<script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<style>
+  * { -webkit-font-smoothing: antialiased; box-sizing: border-box; }
+  body { font-family: 'Inter', sans-serif; margin: 0; background: #F5F2EE; }
+  .serif { font-family: 'Instrument Serif', serif; }
+  .grain::before { content: ''; position: fixed; inset: 0; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.15'/%3E%3C/svg%3E"); pointer-events: none; z-index: 9999; opacity: 0.4; mix-blend-mode: multiply; }
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes menuSlide { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+  @keyframes menuLinkIn { from { opacity: 0; transform: translateX(24px); } to { opacity: 1; transform: translateX(0); } }
+  .animate-fadeUp { animation: fadeUp 0.9s cubic-bezier(0.16, 1, 0.3, 1) forwards; opacity: 0; }
+  .delay-100 { animation-delay: 0.1s; }
+  .delay-200 { animation-delay: 0.2s; }
+  .delay-300 { animation-delay: 0.3s; }
+  .scroll-reveal { opacity: 0; transform: translateY(60px); transition: opacity 1s cubic-bezier(0.16, 1, 0.3, 1), transform 1s cubic-bezier(0.16, 1, 0.3, 1); }
+  .scroll-reveal.in-view { opacity: 1; transform: translateY(0); }
+  .nav-link { position: relative; }
+  .nav-link::after { content: ''; position: absolute; bottom: -1px; left: 0; width: 0; height: 1.5px; background: #E05A1A; transition: width 0.35s cubic-bezier(0.16, 1, 0.3, 1); }
+  .nav-link:hover::after { width: 100%; }
+  .menu-slide { animation: menuSlide 0.45s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+  .menu-link-in { animation: menuLinkIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; opacity: 0; }
+  html { scroll-behavior: smooth; }
+  .article-body p { margin-bottom: 1.6rem; line-height: 1.9; color: #1a1a1a; }
+  .hover-lift { transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
+  .hover-lift:hover { transform: translateY(-6px); box-shadow: 0 24px 64px rgba(0,0,0,0.12); }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel" data-presets="react">
+const { useState, useEffect, useRef } = React;
+
+function Icon({ name, size = 16, className = '', strokeWidth = 2 }) {
+  const i = {
+    arrow: <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round" className={className}><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg>,
+    x: <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round" className={className}><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>,
+    menu: <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round" className={className}><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>,
+    arrowLeft: <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round" className={className}><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>,
+  };
+  return i[name] || null;
+}
+
+function Logo({ size = 32 }) {
+  return <img src="tfcn-logo.svg" width={size} height={size} alt="TFCN Logo" style={{ flexShrink: 0, objectFit: 'contain', display: 'block' }}/>;
+}
+
+function MobileMenu({ onClose }) {
+  const links = [['index.html#about','About'],['index.html#host','Convener'],['index.html#tickets','Tickets'],['index.html#faq','FAQ'],['blog.html','Blog']];
+  useEffect(() => { document.body.style.overflow = 'hidden'; return () => { document.body.style.overflow = ''; }; }, []);
+  return (
+    <div className="menu-slide fixed inset-0 z-50 bg-[#0A0A0A] flex flex-col">
+      <div className="flex items-center justify-between px-5 py-5 border-b border-white/10">
+        <a href="index.html" className="text-white flex items-center gap-2.5"><Logo size={28}/></a>
+        <button onClick={onClose} className="w-10 h-10 flex items-center justify-center text-white/70 hover:text-white transition-colors"><Icon name="x" size={22} strokeWidth={2}/></button>
+      </div>
+      <nav className="flex-1 px-6 py-8 flex flex-col justify-center space-y-1">
+        {links.map(([href, label], i) => (
+          <a key={i} href={href} onClick={onClose} className="menu-link-in block text-4xl sm:text-5xl font-bold text-white/50 hover:text-white py-4 border-b border-white/10 transition-colors duration-300" style={{ animationDelay: `${0.05 + i * 0.07}s` }}>{label}</a>
+        ))}
+      </nav>
+      <div className="px-6 pb-10 menu-link-in" style={{ animationDelay: '0.42s' }}>
+        <a href="https://app.eventpadi.com/thefinancecyclenetwork" target="_blank" rel="noopener noreferrer" className="block w-full text-center bg-[#E05A1A] text-white py-4 font-semibold rounded-full hover:bg-white hover:text-[#0A0A0A] transition-all duration-300 mb-4">Secure Your Seat</a>
+        <p className="text-center text-[10px] font-bold tracking-[0.25em] uppercase text-white/25">Edition 3.0 · Lagos · 23 July 2026</p>
+      </div>
+    </div>
+  );
+}
+
+const related = [
+  { title: "Why Africa's Wealthiest Operators Think in Cycles", tag: 'Wealth Cycles', readTime: '5 min read', bg: '#0A0A0A', stripe: 'rgba(224,90,26,0.18)', textCol: '#ffffff', arrowBg: '#E05A1A', slug: 'blog-cycles.html' },
+  { title: 'Behind TFCN: The Vision of Sir K.C Onyekachi', tag: 'Convener', readTime: '4 min read', bg: '#F0EDE8', stripe: 'rgba(224,90,26,0.13)', textCol: '#0A0A0A', arrowBg: '#0A0A0A', slug: 'blog-behind-tfcn.html' },
+];
+
+function App() {
+  const [scrolled, setScrolled] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
+  useEffect(() => { const fn = () => setScrolled(window.scrollY > 20); window.addEventListener('scroll', fn); return () => window.removeEventListener('scroll', fn); }, []);
+  useEffect(() => {
+    const obs = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('in-view'); obs.unobserve(e.target); } }), { threshold: 0.1, rootMargin: '0px 0px -80px 0px' });
+    setTimeout(() => document.querySelectorAll('.scroll-reveal').forEach((el) => obs.observe(el)), 100);
+    return () => obs.disconnect();
+  }, []);
+
+  const navBg = scrolled ? 'bg-white/90 backdrop-blur-xl border-b border-black/10 py-3' : 'bg-transparent py-5';
+  const linkColor = scrolled ? 'text-[#0A0A0A]/60 hover:text-[#0A0A0A]' : 'text-white/80 hover:text-white';
+  const logoColor = scrolled ? 'text-[#0A0A0A]' : 'text-white';
+  const menuColor = scrolled ? 'text-[#0A0A0A]' : 'text-white';
+
+  return (
+    <div className="min-h-screen bg-[#F5F2EE] text-[#0A0A0A] grain">
+      {menuOpen && <MobileMenu onClose={() => setMenuOpen(false)} />}
+
+      {/* NAV */}
+      <nav className={`fixed top-0 inset-x-0 z-40 transition-all duration-500 ${navBg}`}>
+        <div className="max-w-7xl mx-auto px-5 lg:px-10 flex items-center justify-between">
+          <a href="index.html" className={`flex items-center gap-2.5 transition-colors duration-500 ${logoColor}`}>
+            <Logo size={30}/>
+            <span className="text-[13px] font-bold tracking-tight hidden sm:block">The <span className="text-[#E05A1A]">Finance</span> Cycle Network</span>
+          </a>
+          <div className="flex items-center gap-1">
+            <a href="index.html#about" className={`nav-link hidden md:block text-sm font-medium px-4 py-2 transition ${linkColor}`}>About</a>
+            <a href="index.html#host" className={`nav-link hidden md:block text-sm font-medium px-4 py-2 transition ${linkColor}`}>Convener</a>
+            <a href="index.html#tickets" className={`nav-link hidden md:block text-sm font-medium px-4 py-2 transition ${linkColor}`}>Tickets</a>
+            <a href="blog.html" className="nav-link hidden md:block text-sm font-semibold text-[#E05A1A] px-4 py-2 transition">Blog</a>
+            <a href="https://app.eventpadi.com/thefinancecyclenetwork" target="_blank" rel="noopener noreferrer" className="hidden md:inline-flex items-center gap-1.5 bg-[#0A0A0A] text-white px-5 py-2.5 text-sm font-semibold rounded-full hover:bg-[#E05A1A] transition-all duration-300">Register <Icon name="arrow" size={12}/></a>
+            <button onClick={() => setMenuOpen(true)} className={`md:hidden flex items-center justify-center w-10 h-10 transition-colors duration-500 ${menuColor}`}><Icon name="menu" size={22} strokeWidth={2}/></button>
+          </div>
+        </div>
+      </nav>
+
+      {/* ARTICLE HERO */}
+      <section className="pt-32 pb-24 px-5 lg:px-10 relative overflow-hidden" style={{ background: '#E05A1A' }}>
+        <div className="absolute inset-0 opacity-[0.08]" style={{ backgroundImage: 'linear-gradient(#000000 1px, transparent 1px), linear-gradient(90deg, #000000 1px, transparent 1px)', backgroundSize: '60px 60px' }}/>
+        <div className="absolute bottom-0 right-0 w-48 h-48 lg:w-72 lg:h-72 opacity-20" style={{ background: 'radial-gradient(circle, #000 0%, transparent 70%)' }}/>
+        <div className="max-w-4xl mx-auto relative">
+          <a href="blog.html" className="animate-fadeUp inline-flex items-center gap-2 text-white/50 hover:text-white text-sm font-medium transition-colors duration-300 mb-10 group">
+            <span className="group-hover:-translate-x-1 transition-transform duration-300 inline-block"><Icon name="arrowLeft" size={15}/></span> Back to Blog
+          </a>
+          <div className="animate-fadeUp delay-100 flex items-center gap-3 mb-6">
+            <span className="text-[9px] font-bold tracking-[0.3em] uppercase text-white bg-white/20 px-3 py-1 rounded-full">2026 Theme</span>
+            <span className="w-1 h-1 rounded-full bg-white/30"></span>
+            <span className="text-[9px] font-bold tracking-[0.3em] uppercase text-white/50">4 min read</span>
+          </div>
+          <h1 className="animate-fadeUp delay-200 font-bold tracking-[-0.04em] leading-[1.05] text-white mb-8" style={{ fontSize: 'clamp(30px, 5vw, 68px)' }}>
+            The Old <span className="serif italic font-normal">Taker:</span><br className="hidden sm:block"/>
+            Understanding the 2026 <span className="serif italic font-normal">Theme.</span>
+          </h1>
+          <p className="animate-fadeUp delay-300 text-sm text-white/50 font-medium tracking-wide">By Sir K.C Onyekachi &nbsp;&nbsp;·&nbsp;&nbsp; May 2026</p>
+        </div>
+      </section>
+
+      {/* ARTICLE BODY */}
+      <section className="py-16 lg:py-24 px-5 lg:px-10">
+        <div className="max-w-3xl mx-auto scroll-reveal">
+
+          {/* Lead paragraph */}
+          <p className="text-xl sm:text-2xl font-medium leading-[1.75] text-[#0A0A0A] mb-10 pb-10" style={{ borderBottom: '1px solid rgba(10,10,10,0.1)', margin: 0, marginBottom: '2.5rem', paddingBottom: '2.5rem' }}>
+            There is a figure that appears in the aftermath of every major financial cycle. Not the person who never built anything. The person who built, accumulated, held real assets, commanded real rooms, and then, without fully understanding how or when it happened, found themselves on the other side of it.
+          </p>
+
+          <div className="article-body">
+            <p>This is the Old Taker.</p>
+
+            <h2 style={{ fontFamily: 'Inter, sans-serif', fontSize: '1.2rem', fontWeight: 700, marginTop: '2.8rem', marginBottom: '1.1rem', color: '#0A0A0A', display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+              <span style={{ width: '20px', height: '2px', background: '#E05A1A', flexShrink: 0 }}></span>
+              A Familiar Figure
+            </h2>
+
+            <p>The name is deliberate. An "old taker" is someone who used to take: used to be the one other people watched and studied, used to be the example pointed to in rooms like the ones TFCN convenes. The past tense is the entire point.</p>
+
+            <p>They are not a failure in the traditional sense. They did not make one catastrophic mistake. They did not bet everything on a single venture and lose it all overnight. That story is too clean. The Old Taker's story is more gradual, and therefore more dangerous to ignore.</p>
+
+            <p>What happened to them happened slowly, and then all at once.</p>
+
+            {/* Pullquote */}
+            <div style={{ margin: '2.5rem 0', padding: '2rem 2.5rem', background: '#0A0A0A', borderRadius: '1rem' }}>
+              <p style={{ fontFamily: 'Instrument Serif, serif', fontStyle: 'italic', fontSize: 'clamp(1.25rem, 2.5vw, 1.65rem)', lineHeight: 1.4, color: 'rgba(255,255,255,0.9)', margin: 0 }}>
+                "The Old Taker's story is gradual, and therefore more dangerous to ignore."
+              </p>
+            </div>
+
+            <h2 style={{ fontFamily: 'Inter, sans-serif', fontSize: '1.2rem', fontWeight: 700, marginTop: '2.8rem', marginBottom: '1.1rem', color: '#0A0A0A', display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+              <span style={{ width: '20px', height: '2px', background: '#E05A1A', flexShrink: 0 }}></span>
+              How the Cycle Turns
+            </h2>
+
+            <p>Most Old Takers lose their position in the same way. They reach the high point of a wealth cycle and they mistake it for the new floor. They assume the conditions that produced their success are permanent conditions. They extrapolate the upward line indefinitely.</p>
+
+            <p>Then the line bends.</p>
+
+            <p>Real estate that seemed like a guaranteed store of value gets hit by currency devaluation and demand contraction at the same time. A business that dominated a sector for a decade faces disruption from a direction nobody predicted. A portfolio weighted heavily in local currency assets loses a third of its dollar value in eighteen months.</p>
+
+            <p>The Old Taker is not destroyed by these events. They are worn down by a combination of them, while still believing they have time to recover.</p>
+
+            <h2 style={{ fontFamily: 'Inter, sans-serif', fontSize: '1.2rem', fontWeight: 700, marginTop: '2.8rem', marginBottom: '1.1rem', color: '#0A0A0A', display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+              <span style={{ width: '20px', height: '2px', background: '#E05A1A', flexShrink: 0 }}></span>
+              The Warning Signs Nobody Tells You
+            </h2>
+
+            <p>The first warning sign is comfort. When your current position feels safe, feels like it will hold regardless of what happens next, that is precisely when you need to stress test it.</p>
+
+            <p>The second is isolation. Old Takers often stop attending the rooms where honest conversations happen. They surround themselves with people who affirm their current strategy rather than challenge it. They stop asking difficult questions because they assume they have already answered them.</p>
+
+            <p>The third is momentum confusion. They confuse the momentum they built during the cycle with the momentum they actually have right now. These are different things. One is historical. One is the reality of today's market.</p>
+
+            <h2 style={{ fontFamily: 'Inter, sans-serif', fontSize: '1.2rem', fontWeight: 700, marginTop: '2.8rem', marginBottom: '1.1rem', color: '#0A0A0A', display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+              <span style={{ width: '20px', height: '2px', background: '#E05A1A', flexShrink: 0 }}></span>
+              What Separates the Survivors
+            </h2>
+
+            <p>The operators who pass through a cycle turn and come out positioned better than they entered share one consistent trait. They stayed in honest rooms.</p>
+
+            <p>They kept showing up to conversations where other serious operators were willing to say: I was wrong about that. I lost money on that move. I missed that signal. Here is what I learned.</p>
+
+            <p>These conversations do not happen at public conferences. They happen in private, among people with enough shared context and enough mutual respect to be direct. The willingness to be in those rooms, to be teachable even after you have already built something, is what separates the survivors from the Old Takers.</p>
+
+            <h2 style={{ fontFamily: 'Inter, sans-serif', fontSize: '1.2rem', fontWeight: 700, marginTop: '2.8rem', marginBottom: '1.1rem', color: '#0A0A0A', display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+              <span style={{ width: '20px', height: '2px', background: '#E05A1A', flexShrink: 0 }}></span>
+              Where This Conversation Belongs
+            </h2>
+
+            <p>TFCN 2026 is not a warning. It is not a cautionary tale dressed up as a gathering.</p>
+
+            <p>It is an intervention for everyone who is currently building wealth and wants to make sure that what they are building holds through the next cycle turn. The theme this year is The Old Taker because the room deserves to look directly at the risk, not around it.</p>
+
+            <p>Every person in that room on 23 July 2026 has the potential to become an Old Taker. The ones who will not are the ones who show up to this conversation seriously.</p>
+          </div>
+
+        </div>
+      </section>
+
+      {/* READ NEXT */}
+      <section className="py-16 lg:py-20 px-5 lg:px-10 border-t border-[#0A0A0A]/8" style={{ background: 'rgba(255,255,255,0.5)' }}>
+        <div className="max-w-7xl mx-auto scroll-reveal">
+          <div className="flex items-center gap-3 mb-10">
+            <div className="w-6 h-px bg-[#E05A1A]"></div>
+            <span className="text-[10px] font-bold tracking-[0.25em] uppercase text-[#E05A1A]">Read Next</span>
+          </div>
+          <div className="grid md:grid-cols-2 gap-6">
+            {related.map((post, i) => (
+              <a key={i} href={post.slug} className="group hover-lift block">
+                <div className="relative rounded-2xl overflow-hidden mb-4" style={{ aspectRatio: '16/9', background: post.bg, backgroundImage: `repeating-linear-gradient(-48deg, transparent, transparent 22px, ${post.stripe} 22px, ${post.stripe} 44px)` }}>
+                  <div className="absolute inset-0 p-6 flex flex-col justify-between">
+                    <span className="text-[9px] font-bold tracking-[0.3em] uppercase" style={{ color: post.textCol, opacity: 0.5 }}>{post.tag}</span>
+                    <p className="text-lg font-bold leading-snug pr-10" style={{ color: post.textCol }}>{post.title}</p>
+                  </div>
+                  <div className="absolute bottom-4 right-4 w-10 h-10 rounded-full flex items-center justify-center transition-all duration-300 group-hover:scale-110" style={{ background: post.arrowBg }}>
+                    <Icon name="arrow" size={14} className="text-white"/>
+                  </div>
+                </div>
+                <span className="text-[9px] font-bold tracking-[0.25em] uppercase text-[#E05A1A] mb-2 block">{post.tag} · {post.readTime}</span>
+                <h3 className="text-base font-bold text-[#0A0A0A] leading-snug group-hover:text-[#E05A1A] transition-colors duration-300">{post.title}</h3>
+              </a>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* CTA STRIP */}
+      <section className="py-20 px-5 lg:px-10 bg-[#0A0A0A] text-white text-center">
+        <div className="max-w-2xl mx-auto">
+          <p className="serif italic text-2xl sm:text-3xl lg:text-4xl text-white/90 mb-8">"Don't become the person<br/>who says <span className="text-[#E05A1A]">'I used to have...'</span>"</p>
+          <a href="https://app.eventpadi.com/thefinancecyclenetwork" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 bg-[#E05A1A] text-white px-8 py-4 text-sm font-bold tracking-[0.1em] uppercase rounded-full hover:bg-white hover:text-[#0A0A0A] transition-all duration-300">Secure Your Seat <Icon name="arrow" size={14}/></a>
+        </div>
+      </section>
+
+      {/* FOOTER */}
+      <footer className="bg-[#0A0A0A] text-white pt-16 pb-10 px-5 lg:px-10 border-t border-white/10">
+        <div className="max-w-7xl mx-auto">
+          <div className="grid lg:grid-cols-12 gap-10 mb-12">
+            <div className="lg:col-span-6">
+              <div className="flex items-center gap-3 mb-6 text-white"><Logo size={40}/><div><div className="text-base font-bold tracking-tight">The <span className="text-[#E05A1A]">Finance</span> Cycle Network</div><div className="text-xs text-white/40 mt-0.5">Edition 3.0 · 2026</div></div></div>
+              <p className="text-sm text-white/50 max-w-md leading-relaxed">Africa's most curated finance gathering. Built for operators who read cycles before the crowd notices.</p>
+            </div>
+            <div className="lg:col-span-3">
+              <div className="text-xs font-bold tracking-[0.2em] uppercase text-[#E05A1A] mb-4">Event</div>
+              <ul className="space-y-3 text-sm text-white/60"><li>TFCN 2026: The Old Taker</li><li>23 July 2026</li><li>Lagos, Nigeria</li><li>Convener: Sir K.C Onyekachi</li></ul>
+            </div>
+            <div className="lg:col-span-3">
+              <div className="text-xs font-bold tracking-[0.2em] uppercase text-[#E05A1A] mb-4">Connect</div>
+              <ul className="space-y-3 text-sm text-white/60">
+                <li><a href="#" className="hover:text-white transition-colors">Instagram</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">Twitter / X</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">LinkedIn</a></li>
+                <li><a href="mailto:hello@tfcn.network" className="hover:text-white transition-colors">hello@tfcn.network</a></li>
+              </ul>
+            </div>
+          </div>
+          <div className="pt-7 border-t border-white/10 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+            <p className="text-xs text-white/40 tracking-wider">© 2026 The Finance Cycle Network. All rights reserved.</p>
+            <p className="text-xs text-white/40 tracking-[0.15em] uppercase">Designed for the old taker in all of us</p>
+          </div>
+        </div>
+      </footer>
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+</script>
+</body>
+</html>
