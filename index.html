@@ -244,19 +244,6 @@ function App() {
         </div>
       </section>
 
-      {/* TICKER */}
-      <section className="bg-[#0A0A0A] text-white py-5 overflow-hidden">
-        <div className="ticker">
-          {[...Array(2)].map((_, i) => (
-            <div key={i} className="flex items-center gap-10 px-5 shrink-0">
-              {['THIRD EDITION', '◆', 'THEME: THE OLD TAKER', '◆', '#TFCN26', '◆'].map((text, j) => (
-                <span key={j} className={`text-xs sm:text-sm font-bold tracking-[0.2em] uppercase shrink-0 ${text === '◆' ? 'text-[#E05A1A]' : 'text-white'}`}>{text}</span>
-              ))}
-            </div>
-          ))}
-        </div>
-      </section>
-
       {/* COUNTDOWN */}
       <section className="py-16 lg:py-24 px-5 lg:px-10 bg-[#0A0A0A] text-white">
         <div className="max-w-7xl mx-auto">
