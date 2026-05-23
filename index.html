@@ -134,7 +134,7 @@ function MobileMenu({ onClose }) {
         ))}
       </nav>
       <div className="px-6 pb-10 menu-link-in" style={{ animationDelay: '0.35s' }}>
-        <a href="#register" onClick={onClose} className="block w-full text-center bg-[#E05A1A] text-white py-4 font-semibold rounded-full hover:bg-white hover:text-[#0A0A0A] transition-all duration-300 mb-4">
+        <a href="https://app.eventpadi.com/thefinancecyclenetwork" target="_blank" rel="noopener noreferrer" onClick={onClose} className="block w-full text-center bg-[#E05A1A] text-white py-4 font-semibold rounded-full hover:bg-white hover:text-[#0A0A0A] transition-all duration-300 mb-4">
           Secure Your Seat
         </a>
         <p className="text-center text-[10px] font-bold tracking-[0.25em] uppercase text-white/25">Edition 3.0 · Lagos · 23 July 2026</p>
@@ -263,8 +263,7 @@ function App() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    setSubmitted(true);
-    setTimeout(() => window.scrollTo({ top: document.getElementById('register').offsetTop - 60, behavior: 'smooth' }), 100);
+    window.open('https://app.eventpadi.com/thefinancecyclenetwork', '_blank', 'noopener,noreferrer');
   };
 
   return (
@@ -285,7 +284,7 @@ function App() {
             <a href="#host" className="nav-link hidden md:block text-sm font-medium text-[#0A0A0A]/60 hover:text-[#0A0A0A] px-4 py-2 transition">Convener</a>
             <a href="#tickets" className="nav-link hidden md:block text-sm font-medium text-[#0A0A0A]/60 hover:text-[#0A0A0A] px-4 py-2 transition">Tickets</a>
             <a href="#faq" className="nav-link hidden md:block text-sm font-medium text-[#0A0A0A]/60 hover:text-[#0A0A0A] px-4 py-2 transition">FAQ</a>
-            <a href="#register" className="hidden md:inline-flex items-center gap-1.5 bg-[#0A0A0A] text-white px-5 py-2.5 text-sm font-semibold rounded-full hover:bg-[#E05A1A] transition-all duration-300">
+            <a href="https://app.eventpadi.com/thefinancecyclenetwork" target="_blank" rel="noopener noreferrer" className="hidden md:inline-flex items-center gap-1.5 bg-[#0A0A0A] text-white px-5 py-2.5 text-sm font-semibold rounded-full hover:bg-[#E05A1A] transition-all duration-300">
               Register <Icon name="arrow" size={12}/>
             </a>
             <button onClick={() => setMenuOpen(true)} className="md:hidden flex items-center justify-center w-10 h-10 text-[#0A0A0A]">
@@ -321,7 +320,7 @@ function App() {
 
           {/* CTA */}
           <div className="animate-fadeUp delay-300">
-            <a href="#register" className="magnetic-btn inline-flex items-center gap-2 bg-[#0A0A0A] text-white px-8 py-4 text-sm font-semibold hover:bg-[#E05A1A] transition-all duration-300">
+            <a href="https://app.eventpadi.com/thefinancecyclenetwork" target="_blank" rel="noopener noreferrer" className="magnetic-btn inline-flex items-center gap-2 bg-[#0A0A0A] text-white px-8 py-4 text-sm font-semibold hover:bg-[#E05A1A] transition-all duration-300">
               Secure Your Seat <Icon name="arrow" size={14}/>
             </a>
           </div>
@@ -358,7 +357,7 @@ function App() {
                 <p>Every year, we explore a new theme that cuts to the core of what it means to build and sustain wealth in a world of endless noise.</p>
                 <p className="text-[#0A0A0A]/60">No fluff. No motivational theatre. Just the patterns of those who have seen empires rise, markets fall, and wealth quietly compound through cycles.</p>
               </div>
-              <a href="#register" className="mt-10 inline-flex items-center gap-2 bg-[#0A0A0A] text-white px-7 py-4 text-sm font-semibold rounded-full hover:bg-[#E05A1A] transition-all duration-300">
+              <a href="https://app.eventpadi.com/thefinancecyclenetwork" target="_blank" rel="noopener noreferrer" className="mt-10 inline-flex items-center gap-2 bg-[#0A0A0A] text-white px-7 py-4 text-sm font-semibold rounded-full hover:bg-[#E05A1A] transition-all duration-300">
                 Register for 2026 <Icon name="arrow" size={14}/>
               </a>
             </div>
@@ -537,7 +536,7 @@ function App() {
                   </li>
                 ))}
               </ul>
-              <a href="#register" className="block w-full text-center py-4 text-sm font-semibold tracking-tight bg-[#0A0A0A] text-white rounded-2xl hover:bg-[#E05A1A] transition-all duration-300">
+              <a href="https://app.eventpadi.com/thefinancecyclenetwork" target="_blank" rel="noopener noreferrer" className="block w-full text-center py-4 text-sm font-semibold tracking-tight bg-[#0A0A0A] text-white rounded-2xl hover:bg-[#E05A1A] transition-all duration-300">
                 <span className="inline-flex items-center gap-2">Apply for Free Tier <Icon name="arrow" size={12}/></span>
               </a>
             </div>
@@ -574,7 +573,7 @@ function App() {
                   </li>
                 ))}
               </ul>
-              <a href="#register" className="block w-full text-center py-4 text-sm font-semibold tracking-tight bg-[#E05A1A] text-white rounded-2xl hover:bg-white hover:text-[#0A0A0A] transition-all duration-300">
+              <a href="https://app.eventpadi.com/thefinancecyclenetwork" target="_blank" rel="noopener noreferrer" className="block w-full text-center py-4 text-sm font-semibold tracking-tight bg-[#E05A1A] text-white rounded-2xl hover:bg-white hover:text-[#0A0A0A] transition-all duration-300">
                 <span className="inline-flex items-center gap-2">Get Premium Now <Icon name="arrow" size={12}/></span>
               </a>
             </div>
@@ -689,7 +688,7 @@ function App() {
             "Don't become the person<br/>who says <span className="text-[#E05A1A]">'I used to have...'</span>"
           </p>
           <p className="text-base sm:text-lg text-white/60 mb-12 max-w-2xl mx-auto">TFCN 2026 · The Old Taker · 25 July · Lagos</p>
-          <a href="#register" className="inline-flex items-center gap-2 bg-[#E05A1A] text-white px-8 py-5 text-sm font-bold tracking-[0.1em] uppercase rounded-full hover:bg-white hover:text-[#0A0A0A] transition-all duration-300">
+          <a href="https://app.eventpadi.com/thefinancecyclenetwork" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 bg-[#E05A1A] text-white px-8 py-5 text-sm font-bold tracking-[0.1em] uppercase rounded-full hover:bg-white hover:text-[#0A0A0A] transition-all duration-300">
             Secure Your Seat <Icon name="arrow" size={14}/>
           </a>
         </div>
