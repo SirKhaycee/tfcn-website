@@ -213,18 +213,6 @@ function App() {
             <div style={{ fontSize: 'clamp(48px, 9vw, 110px)' }} className="-mt-1 lg:-mt-2">finance gathering.</div>
           </h1>
 
-          {/* Theme marquee */}
-          <div className="animate-fadeUp delay-200 overflow-hidden mb-8 py-1" style={{ WebkitMaskImage: 'linear-gradient(to right, transparent, black 8%, black 92%, transparent)', maskImage: 'linear-gradient(to right, transparent, black 8%, black 92%, transparent)' }}>
-            <div className="flex" style={{ animation: 'ticker-rev 32s linear infinite', whiteSpace: 'nowrap' }}>
-              {[...Array(8)].map((_, i) => (
-                <span key={i} className="shrink-0 inline-flex items-center gap-5 pr-10">
-                  <span className="serif italic text-[#E05A1A] font-normal" style={{ fontSize: 'clamp(20px, 3vw, 32px)' }}>The Old Taker</span>
-                  <span className="text-[9px] font-bold tracking-[0.35em] uppercase text-[#0A0A0A]/25">2026 Theme</span>
-                  <span className="text-[#E05A1A]/40 text-xs">◆</span>
-                </span>
-              ))}
-            </div>
-          </div>
 
           {/* Sub copy */}
           <div className="animate-fadeUp delay-300 max-w-xl mb-10">
