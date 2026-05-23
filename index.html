@@ -216,24 +216,12 @@ function FAQItem({ q, a, open, onClick }) {
   );
 }
 
-function Input({ label, value, onChange, placeholder, type = 'text', required = false }) {
-  return (
-    <div className="mb-4">
-      <label className="block text-[10px] font-bold tracking-[0.2em] uppercase text-[#0A0A0A]/50 mb-2.5">{label}</label>
-      <input type={type} value={value} onChange={(e) => onChange(e.target.value)} placeholder={placeholder} required={required}
-        className="w-full bg-white border-0 border-b-2 border-[#0A0A0A]/10 focus:border-[#E05A1A] text-base font-medium py-3 px-4 outline-none transition-colors duration-300"
-        style={{ borderRadius: 0 }}/>
-    </div>
-  );
-}
 
 function App() {
   const [loaded, setLoaded] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const [submitted, setSubmitted] = useState(false);
   const [openFaq, setOpenFaq] = useState(0);
-  const [form, setForm] = useState({ firstName: '', lastName: '', email: '', phone: '', tier: '', org: '' });
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20);
@@ -260,11 +248,6 @@ function App() {
     { q: 'Can my company sponsor TFCN 2026?', a: 'Yes. We offer several partnership tiers for brands looking to align with Africa\'s premier finance gathering. Reach out via the sponsorship contact for the full deck and benefits.' },
     { q: 'Will sessions be recorded?', a: 'Yes. Premium tier holders receive full HD recordings of every session after the event. Free tier holders get access to the live experience only.' },
   ];
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    window.open('https://app.eventpadi.com/thefinancecyclenetwork', '_blank', 'noopener,noreferrer');
-  };
 
   return (
     <div className="min-h-screen bg-[#F5F2EE] text-[#0A0A0A] grain">
@@ -651,68 +634,6 @@ function App() {
         </div>
       </section>
 
-      {/* REGISTER */}
-      <section id="register" className="py-20 lg:py-32 px-5 lg:px-10 bg-white">
-        <div className="max-w-6xl mx-auto">
-          <div className="grid lg:grid-cols-12 gap-10 lg:gap-20">
-            <div className="lg:col-span-5 scroll-reveal">
-              <div className="flex items-center gap-2 mb-6"><div className="w-8 h-px bg-[#E05A1A]"></div><span className="text-[10px] sm:text-xs font-bold tracking-[0.25em] uppercase text-[#E05A1A]">Register Now</span></div>
-              <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-[-0.04em] leading-[0.95] mb-7">Take your<br/><span className="serif italic font-normal text-[#E05A1A]">seat.</span></h2>
-              <p className="text-base sm:text-lg text-[#0A0A0A]/70 leading-relaxed mb-10">Premium gives you instant access. Free tier applications are reviewed within 5 business days.</p>
-              <div className="space-y-4">
-                {[
-                  { label: 'Operators-only room', desc: 'Every attendee is screened or verified through payment.' },
-                  { label: 'Real strategy. Real connections.', desc: 'No fluff sessions. Only conversations that move the needle.' },
-                  { label: 'Premium = instant. Free = curated.', desc: 'Pick the path that works for you.' },
-                ].map((item, i) => (
-                  <div key={i} className="flex gap-4 group">
-                    <div className="w-1 bg-[#E05A1A] group-hover:bg-[#0A0A0A] transition-colors duration-300"></div>
-                    <div className="flex-1 pb-1">
-                      <div className="text-base font-semibold text-[#0A0A0A] mb-1">{item.label}</div>
-                      <div className="text-sm text-[#0A0A0A]/60">{item.desc}</div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            <div className="lg:col-span-7 scroll-reveal">
-              {!submitted ? (
-                <form onSubmit={handleSubmit} className="bg-[#F5F2EE] p-7 lg:p-12">
-                  <h3 className="text-2xl font-bold tracking-tight mb-7">Registration</h3>
-                  <div className="grid grid-cols-2 gap-4 mb-1">
-                    <Input label="First Name" value={form.firstName} onChange={(v) => setForm({...form, firstName: v})} placeholder="First" required/>
-                    <Input label="Last Name" value={form.lastName} onChange={(v) => setForm({...form, lastName: v})} placeholder="Last" required/>
-                  </div>
-                  <Input label="Email Address" type="email" value={form.email} onChange={(v) => setForm({...form, email: v})} placeholder="your@email.com" required/>
-                  <Input label="Phone Number" type="tel" value={form.phone} onChange={(v) => setForm({...form, phone: v})} placeholder="+234 ..."/>
-                  <div className="mb-4">
-                    <label className="block text-[10px] font-bold tracking-[0.2em] uppercase text-[#0A0A0A]/50 mb-2.5">Select Tier</label>
-                    <select value={form.tier} onChange={(e) => setForm({...form, tier: e.target.value})} className="w-full bg-white border-0 border-b-2 border-[#0A0A0A]/10 focus:border-[#E05A1A] text-base font-medium py-3 px-4 outline-none transition-colors duration-300" style={{ borderRadius: 0, appearance: 'none' }} required>
-                      <option value="" disabled>Choose your tier</option>
-                      <option>Free Tier (Application)</option>
-                      <option>Premium Tier: ₦75,000 (Instant)</option>
-                    </select>
-                  </div>
-                  <Input label="Organization (Optional)" value={form.org} onChange={(v) => setForm({...form, org: v})} placeholder="Where do you work or invest?"/>
-                  <button type="submit" className="mt-5 w-full bg-[#0A0A0A] text-white py-5 text-sm font-semibold tracking-tight rounded-2xl hover:bg-[#E05A1A] transition-all duration-300 inline-flex items-center justify-center gap-2">
-                    {form.tier === 'Premium Tier: ₦75,000 (Instant)' ? 'Proceed to Payment' : 'Submit Application'} <Icon name="arrow" size={14}/>
-                  </button>
-                  <p className="text-xs text-[#0A0A0A]/40 text-center mt-4">Premium tier holders skip the queue. Free tier applications reviewed within 5 days.</p>
-                </form>
-              ) : (
-                <div className="bg-[#0A0A0A] text-white p-10 lg:p-16 animate-fadeUp">
-                  <div className="w-16 h-16 bg-[#E05A1A] flex items-center justify-center mb-7"><Icon name="check" size={28} strokeWidth={3} className="text-white"/></div>
-                  <h3 className="text-4xl sm:text-5xl font-bold tracking-[-0.04em] mb-5">You're <span className="serif italic font-normal text-[#E05A1A]">in.</span></h3>
-                  <p className="text-base sm:text-lg text-white/70 leading-relaxed mb-7">Welcome to TFCN 2026. We've received your submission and will be in touch via email shortly.</p>
-                  <p className="text-xs sm:text-sm text-white/40 tracking-[0.1em] uppercase">See you in Lagos, 23 July 2026. The TFCN Team</p>
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
-      </section>
-
       {/* CLOSING */}
       <section className="py-24 lg:py-32 px-5 lg:px-10 bg-[#0A0A0A] text-white text-center relative overflow-hidden">
         <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: 'linear-gradient(#fff 1px, transparent 1px), linear-gradient(90deg, #fff 1px, transparent 1px)', backgroundSize: '60px 60px' }}/>
@@ -720,7 +641,7 @@ function App() {
           <p className="serif italic text-2xl sm:text-4xl lg:text-6xl leading-tight text-white/90 mb-12">
             "Don't become the person<br/>who says <span className="text-[#E05A1A]">'I used to have...'</span>"
           </p>
-          <p className="text-base sm:text-lg text-white/60 mb-12 max-w-2xl mx-auto">TFCN 2026 · The Old Taker · 25 July · Lagos</p>
+          <p className="text-base sm:text-lg text-white/60 mb-12 max-w-2xl mx-auto">TFCN 2026 · The Old Taker · 23 July · Lagos</p>
           <a href="https://app.eventpadi.com/thefinancecyclenetwork" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 bg-[#E05A1A] text-white px-8 py-5 text-sm font-bold tracking-[0.1em] uppercase rounded-full hover:bg-white hover:text-[#0A0A0A] transition-all duration-300">
             Secure Your Seat <Icon name="arrow" size={14}/>
           </a>
