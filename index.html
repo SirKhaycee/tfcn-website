@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TFCN 2026 — The Old Taker | Edition 3.0</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+<script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<style>
+  * { -webkit-font-smoothing: antialiased; box-sizing: border-box; }
+  body { font-family: 'Inter', sans-serif; margin: 0; background: #F5F2EE; }
+  .serif { font-family: 'Instrument Serif', serif; }
+  .grain::before {
+    content: ''; position: fixed; inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.15'/%3E%3C/svg%3E");
+    pointer-events: none; z-index: 9999; opacity: 0.4; mix-blend-mode: multiply;
+  }
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-12px); } }
+  @keyframes ticker { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+  @keyframes pulse-dot { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+  .animate-fadeUp { animation: fadeUp 0.9s cubic-bezier(0.16, 1, 0.3, 1) forwards; opacity: 0; }
+  .animate-float { animation: float 6s ease-in-out infinite; }
+  .animate-pulse-dot { animation: pulse-dot 2s ease-in-out infinite; }
+  .delay-100 { animation-delay: 0.1s; }
+  .delay-200 { animation-delay: 0.2s; }
+  .delay-300 { animation-delay: 0.3s; }
+  .delay-500 { animation-delay: 0.5s; }
+  .ticker { display: flex; animation: ticker 40s linear infinite; white-space: nowrap; }
+  .scroll-reveal { opacity: 0; transform: translateY(60px); transition: opacity 1s cubic-bezier(0.16, 1, 0.3, 1), transform 1s cubic-bezier(0.16, 1, 0.3, 1); }
+  .scroll-reveal.in-view { opacity: 1; transform: translateY(0); }
+  .hover-lift { transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
+  .hover-lift:hover { transform: translateY(-6px); }
+  .magnetic-btn { position: relative; overflow: hidden; transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
+  .magnetic-btn::before { content: ''; position: absolute; inset: 0; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent); transform: translateX(-100%); transition: transform 0.6s; }
+  .magnetic-btn:hover::before { transform: translateX(100%); }
+  .faq-content { max-height: 0; overflow: hidden; transition: max-height 0.5s cubic-bezier(0.16, 1, 0.3, 1); }
+  .faq-content.open { max-height: 600px; }
+  html { scroll-behavior: smooth; }
+</style>
+</head>
+<body>
+<div id="root"></div>
+
+<script type="text/babel" data-presets="react">
+const { useState, useEffect } = React;
+
+function Icon({ name, size = 16, className = '', strokeWidth = 2 }) {
+  const i = {
+    arrow: <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round" className={className}><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg>,
+    check: <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round" className={className}><polyline points="20 6 9 17 4 12"/></svg>,
+    sparkle: <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M12 3l1.5 4.5L18 9l-4.5 1.5L12 15l-1.5-4.5L6 9l4.5-1.5L12 3z"/></svg>,
+    calendar: <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round" className={className}><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>,
+    pin: <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>,
+    users: <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>,
+    trend: <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round" className={className}><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>,
+    mic: <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M12 2a3 3 0 00-3 3v7a3 3 0 006 0V5a3 3 0 00-3-3z"/><path d="M19 10v2a7 7 0 01-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/></svg>,
+    handshake: <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round" className={className}><circle cx="8" cy="17" r="3"/><circle cx="16" cy="17" r="3"/><path d="M5 14V8a2 2 0 012-2h10a2 2 0 012 2v6"/></svg>,
+    target: <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round" className={className}><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>,
+    chart: <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round" className={className}><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>,
+    plus: <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round" className={className}><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>,
+    book: <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>,
+    play: <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round" className={className}><polygon points="5 3 19 12 5 21 5 3"/></svg>,
+    coffee: <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M17 8h1a4 4 0 010 8h-1"/><path d="M3 8h14v9a4 4 0 01-4 4H7a4 4 0 01-4-4z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg>,
+    star: <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round" className={className}><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>,
+    lock: <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round" className={className}><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>,
+  };
+  return i[name] || null;
+}
+
+function Logo({ size = 32 }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 80 80" fill="none" style={{ flexShrink: 0 }}>
+      <path d="M16 16 L16 64 L64 64" stroke="currentColor" strokeWidth="9" strokeLinecap="square" fill="none"/>
+      <path d="M16 16 L52 16" stroke="currentColor" strokeWidth="9" strokeLinecap="square" fill="none"/>
+      <rect x="46" y="8" width="22" height="22" fill="#E05A1A"/>
+    </svg>
+  );
+}
+
+function Countdown() {
+  const target = new Date('2026-07-25T09:00:00');
+  const [t, setT] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
+  useEffect(() => {
+    const tick = () => {
+      const diff = target - new Date();
+      if (diff <= 0) { setT({ days: 0, hours: 0, minutes: 0, seconds: 0 }); return; }
+      setT({
+        days: Math.floor(diff / 86400000),
+        hours: Math.floor((diff / 3600000) % 24),
+        minutes: Math.floor((diff / 60000) % 60),
+        seconds: Math.floor((diff / 1000) % 60),
+      });
+    };
+    tick();
+    const id = setInterval(tick, 1000);
+    return () => clearInterval(id);
+  }, []);
+  return (
+    <div className="grid grid-cols-4 gap-px bg-white/10">
+      {[{ l: 'Days', v: t.days }, { l: 'Hours', v: t.hours }, { l: 'Minutes', v: t.minutes }, { l: 'Seconds', v: t.seconds }].map((u, i) => (
+        <div key={i} className="bg-[#0A0A0A] p-3 sm:p-5 lg:p-6 text-center">
+          <div className="text-2xl sm:text-4xl lg:text-5xl font-bold tracking-[-0.04em] text-white tabular-nums">{String(u.v).padStart(2, '0')}</div>
+          <div className="text-[9px] sm:text-[10px] font-bold tracking-[0.2em] uppercase text-[#E05A1A] mt-1.5">{u.l}</div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function FAQItem({ q, a, open, onClick }) {
+  return (
+    <div className="border-b border-[#0A0A0A]/10">
+      <button onClick={onClick} className="w-full py-6 flex justify-between items-start text-left gap-6 group">
+        <span className="text-base sm:text-lg font-semibold text-[#0A0A0A] group-hover:text-[#E05A1A] transition-colors duration-300">{q}</span>
+        <span className={`flex-shrink-0 w-8 h-8 border-2 border-[#0A0A0A] flex items-center justify-center transition-all duration-500 ${open ? 'bg-[#E05A1A] border-[#E05A1A] text-white rotate-180' : 'text-[#0A0A0A]'}`}>
+          <Icon name={open ? 'check' : 'plus'} size={14} strokeWidth={2.5}/>
+        </span>
+      </button>
+      <div className={`faq-content ${open ? 'open' : ''}`}>
+        <p className="text-[#0A0A0A]/70 text-base leading-relaxed pb-6 pr-12">{a}</p>
+      </div>
+    </div>
+  );
+}
+
+function Input({ label, value, onChange, placeholder, type = 'text', required = false }) {
+  return (
+    <div className="mb-4">
+      <label className="block text-[10px] font-bold tracking-[0.2em] uppercase text-[#0A0A0A]/50 mb-2.5">{label}</label>
+      <input type={type} value={value} onChange={(e) => onChange(e.target.value)} placeholder={placeholder} required={required}
+        className="w-full bg-white border-0 border-b-2 border-[#0A0A0A]/10 focus:border-[#E05A1A] text-base font-medium py-3 px-4 outline-none transition-colors duration-300"
+        style={{ borderRadius: 0 }}/>
+    </div>
+  );
+}
+
+function App() {
+  const [scrolled, setScrolled] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
+  const [openFaq, setOpenFaq] = useState(0);
+  const [form, setForm] = useState({ firstName: '', lastName: '', email: '', phone: '', tier: '', org: '' });
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 20);
+    window.addEventListener('scroll', onScroll);
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
+
+  useEffect(() => {
+    const obs = new IntersectionObserver(
+      (es) => es.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('in-view'); obs.unobserve(e.target); } }),
+      { threshold: 0.1, rootMargin: '0px 0px -80px 0px' }
+    );
+    setTimeout(() => document.querySelectorAll('.scroll-reveal').forEach((el) => obs.observe(el)), 100);
+    return () => obs.disconnect();
+  }, []);
+
+  const faqs = [
+    { q: 'What is TFCN 2026?', a: 'The Finance Cycle Network is a curated annual gathering bringing together Africa\'s sharpest financial minds, operators, and capital allocators. The 2026 edition is themed "The Old Taker" — exploring the mindset of those who read cycles and take wealth before the crowd notices.' },
+    { q: 'When and where is the event?', a: 'TFCN 2026 holds on 25th July 2026 in Lagos, Nigeria. The full venue details will be shared with confirmed attendees closer to the date.' },
+    { q: 'Why is the Free Tier application-based?', a: 'We curate the room intentionally. To preserve the quality of conversations and networking, free admission requires a short application so we can ensure every attendee adds to the experience. Premium tier holders skip this and get instant access.' },
+    { q: 'What\'s the difference between Free and Premium?', a: 'Free Tier gets you into the main event with full session access. Premium Tier (₦75,000) gives you instant approved entry, a premium meal, welcome cocktail, access to the private speakers & host lounge, full HD recordings, lifetime alumni group access, and the exclusive TFCN playbook with reading lists and frameworks.' },
+    { q: 'How do I get my Premium ticket?', a: 'Premium is instant access. You select the Premium Tier, complete payment, and you\'re confirmed immediately — no application or waiting period.' },
+    { q: 'Who should attend TFCN?', a: 'Entrepreneurs, investors, finance professionals, business operators, and anyone serious about understanding wealth cycles and building long-term capital. If you\'re ready to think like the operators who profit before the headlines, this room is for you.' },
+    { q: 'Can my company sponsor TFCN 2026?', a: 'Yes. We offer several partnership tiers for brands looking to align with Africa\'s premier finance gathering. Reach out via the sponsorship contact for the full deck and benefits.' },
+    { q: 'Will sessions be recorded?', a: 'Yes. Premium tier holders receive full HD recordings of every session after the event. Free tier holders get access to the live experience only.' },
+  ];
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    setSubmitted(true);
+    setTimeout(() => window.scrollTo({ top: document.getElementById('register').offsetTop - 60, behavior: 'smooth' }), 100);
+  };
+
+  return (
+    <div className="min-h-screen bg-[#F5F2EE] text-[#0A0A0A] grain">
+
+      {/* NAV */}
+      <nav className={`fixed top-0 inset-x-0 z-50 transition-all duration-500 ${scrolled ? 'bg-white/85 backdrop-blur-xl border-b border-black/10 py-3' : 'bg-transparent py-5'}`}>
+        <div className="max-w-7xl mx-auto px-5 lg:px-10 flex items-center justify-between">
+          <a href="#" className="flex items-center gap-2.5 text-[#0A0A0A]">
+            <Logo size={30}/>
+            <span className="text-[13px] font-bold tracking-tight hidden sm:block">The <span className="text-[#E05A1A]">Finance</span> Cycle Network</span>
+          </a>
+          <div className="flex items-center gap-1">
+            <a href="#about" className="hidden md:block text-sm font-medium text-[#0A0A0A]/60 hover:text-[#0A0A0A] px-4 py-2 transition">About</a>
+            <a href="#host" className="hidden md:block text-sm font-medium text-[#0A0A0A]/60 hover:text-[#0A0A0A] px-4 py-2 transition">Convener</a>
+            <a href="#tickets" className="hidden md:block text-sm font-medium text-[#0A0A0A]/60 hover:text-[#0A0A0A] px-4 py-2 transition">Tickets</a>
+            <a href="#faq" className="hidden md:block text-sm font-medium text-[#0A0A0A]/60 hover:text-[#0A0A0A] px-4 py-2 transition">FAQ</a>
+            <a href="#register" className="inline-flex items-center gap-1.5 bg-[#0A0A0A] text-white px-4 py-2.5 text-xs sm:text-sm font-semibold hover:bg-[#E05A1A] transition-all duration-300">
+              Register <Icon name="arrow" size={12}/>
+            </a>
+          </div>
+        </div>
+      </nav>
+
+      {/* HERO */}
+      <section className="relative pt-28 lg:pt-40 pb-16 px-5 lg:px-10 min-h-screen flex items-center overflow-hidden">
+        <div className="absolute inset-0 opacity-[0.04]" style={{ backgroundImage: 'linear-gradient(#0A0A0A 1px, transparent 1px), linear-gradient(90deg, #0A0A0A 1px, transparent 1px)', backgroundSize: '60px 60px' }}/>
+        <div className="absolute top-1/4 right-6 lg:right-32 w-20 h-20 lg:w-40 lg:h-40 bg-[#E05A1A] opacity-90 animate-float"></div>
+        <div className="absolute bottom-20 right-10 hidden lg:block pointer-events-none">
+          <div className="serif text-[200px] leading-none text-[#0A0A0A]/[0.04] italic">III</div>
+        </div>
+
+        <div className="relative max-w-7xl mx-auto w-full">
+          <div className="animate-fadeUp flex items-center gap-3 mb-8">
+            <div className="w-2 h-2 bg-[#E05A1A] animate-pulse-dot"></div>
+            <span className="text-[10px] sm:text-xs font-bold tracking-[0.25em] uppercase text-[#0A0A0A]/60">Edition 3.0 · Lagos · 25 July 2026</span>
+          </div>
+
+          <h1 className="animate-fadeUp delay-100 font-bold tracking-[-0.05em] leading-[0.9] text-[#0A0A0A] mb-6">
+            <div style={{ fontSize: 'clamp(56px, 12vw, 140px)' }}>TFCN</div>
+            <div style={{ fontSize: 'clamp(56px, 12vw, 140px)' }} className="-mt-2 lg:-mt-4">2026</div>
+          </h1>
+
+          <div className="animate-fadeUp delay-150 inline-flex items-center gap-2 bg-[#E05A1A] px-4 py-2 mb-6">
+            <span className="text-[10px] sm:text-xs font-bold tracking-[0.2em] uppercase text-white">2026 THEME</span>
+            <span className="text-white text-xs">///</span>
+          </div>
+
+          <h2 className="animate-fadeUp delay-200 text-3xl sm:text-4xl lg:text-6xl font-bold tracking-[-0.03em] text-[#0A0A0A] mb-4">
+            <span className="serif italic font-normal text-[#E05A1A]">The Old Taker</span>
+          </h2>
+
+          <div className="animate-fadeUp delay-250 max-w-2xl mb-10">
+            <p className="text-base sm:text-lg lg:text-xl text-[#0A0A0A]/70 leading-relaxed">Don't become the person who says <em>"I used to have..."</em> Africa's most curated finance gathering returns to explore how to build wealth that survives cycles.</p>
+          </div>
+
+          <div className="animate-fadeUp delay-300 flex flex-wrap gap-3 mb-16">
+            <a href="#register" className="magnetic-btn inline-flex items-center gap-2 bg-[#0A0A0A] text-white px-6 sm:px-7 py-4 text-sm font-semibold hover:bg-[#E05A1A] transition-all duration-300">
+              Apply for Free Tier <Icon name="arrow" size={14}/>
+            </a>
+            <a href="#tickets" className="inline-flex items-center gap-2 border border-[#0A0A0A]/20 text-[#0A0A0A] px-6 sm:px-7 py-4 text-sm font-semibold hover:bg-[#0A0A0A] hover:text-white hover:border-[#0A0A0A] transition-all duration-300">Get Premium</a>
+          </div>
+
+          <div className="animate-fadeUp delay-500 grid grid-cols-2 lg:grid-cols-4 gap-px bg-[#0A0A0A]/10 border border-[#0A0A0A]/10">
+            {[
+              { icon: 'calendar', label: 'Date', value: '25 July 2026' },
+              { icon: 'pin', label: 'Location', value: 'Lagos, Nigeria' },
+              { icon: 'users', label: 'Format', value: 'Free + Premium' },
+              { icon: 'trend', label: 'Edition', value: '3.0 — Old Taker' },
+            ].map((item, i) => (
+              <div key={i} className="bg-[#F5F2EE] p-4 lg:p-6 hover:bg-white transition-colors duration-300">
+                <div className="flex items-center gap-2 mb-2 text-[#E05A1A]"><Icon name={item.icon} size={12} strokeWidth={2.5}/><span className="text-[9px] sm:text-[10px] font-bold tracking-[0.2em] uppercase">{item.label}</span></div>
+                <div className="font-bold text-[#0A0A0A] text-sm sm:text-base lg:text-lg tracking-tight">{item.value}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* TICKER */}
+      <section className="bg-[#0A0A0A] text-white py-5 overflow-hidden">
+        <div className="ticker">
+          {[...Array(2)].map((_, i) => (
+            <div key={i} className="flex items-center gap-10 px-5 shrink-0">
+              {['TFCN 2026', '◆', 'EDITION 3.0', '◆', 'LAGOS · 25 JULY 2026', '◆', '2026 THEME: THE OLD TAKER', '◆', 'CAPITAL · CLARITY · CYCLES', '◆'].map((text, j) => (
+                <span key={j} className={`text-xs sm:text-sm font-bold tracking-[0.2em] uppercase shrink-0 ${text === '◆' ? 'text-[#E05A1A]' : 'text-white'}`}>{text}</span>
+              ))}
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* ABOUT */}
+      <section id="about" className="py-20 lg:py-32 px-5 lg:px-10 bg-[#F5F2EE]">
+        <div className="max-w-7xl mx-auto">
+          <div className="grid lg:grid-cols-12 gap-10 lg:gap-20">
+            <div className="lg:col-span-5 scroll-reveal">
+              <div className="flex items-center gap-2 mb-6"><div className="w-8 h-px bg-[#E05A1A]"></div><span className="text-[10px] sm:text-xs font-bold tracking-[0.25em] uppercase text-[#E05A1A]">About TFCN</span></div>
+              <h2 className="text-4xl sm:text-5xl lg:text-7xl font-bold tracking-[-0.04em] leading-[0.95] mb-8">Africa's most<br/><span className="serif italic font-normal text-[#E05A1A]">curated</span> finance gathering.</h2>
+            </div>
+            <div className="lg:col-span-7 scroll-reveal">
+              <div className="space-y-5 text-base sm:text-lg lg:text-xl leading-[1.7] text-[#0A0A0A]/75">
+                <p><strong className="text-[#0A0A0A] font-semibold">The Finance Cycle Network (TFCN)</strong> is an annual gathering of Africa's sharpest financial minds — operators, capital allocators, and visionaries who refuse to participate in the madness of consensus.</p>
+                <p>Every year, we explore a new theme that cuts to the core of what it means to build and sustain wealth in a world of endless noise.</p>
+                <p className="text-[#0A0A0A]/60">No fluff. No motivational theatre. Just the patterns of those who have seen empires rise, markets fall, and wealth quietly compound through cycles.</p>
+              </div>
+              <a href="#register" className="mt-10 inline-flex items-center gap-2 bg-[#0A0A0A] text-white px-7 py-4 text-sm font-semibold hover:bg-[#E05A1A] transition-all duration-300">
+                Register for 2026 <Icon name="arrow" size={14}/>
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* THEME */}
+      <section className="py-20 lg:py-32 px-5 lg:px-10 bg-[#0A0A0A] text-white relative overflow-hidden">
+        <div className="absolute top-10 right-5 opacity-10 pointer-events-none"><div className="serif italic text-[200px] sm:text-[400px] leading-none">III</div></div>
+        <div className="absolute top-1/2 left-10 w-32 h-32 bg-[#E05A1A] -translate-y-1/2 opacity-90 hidden lg:block"></div>
+        <div className="max-w-7xl mx-auto relative">
+          <div className="grid lg:grid-cols-12 gap-12">
+            <div className="lg:col-span-10 lg:col-start-2 scroll-reveal">
+              <div className="flex items-center gap-2 mb-6"><div className="w-8 h-px bg-[#E05A1A]"></div><span className="text-[10px] sm:text-xs font-bold tracking-[0.25em] uppercase text-[#E05A1A]">2026 Theme</span></div>
+              <h2 className="font-bold tracking-[-0.04em] leading-[0.9] mb-10">
+                <div className="text-4xl sm:text-5xl lg:text-7xl mb-3">Don't Become</div>
+                <div className="text-5xl sm:text-6xl lg:text-8xl serif italic font-normal text-[#E05A1A]">"The Old Taker"</div>
+              </h2>
+              <div className="space-y-6 text-base sm:text-lg lg:text-xl leading-relaxed text-white/75 max-w-4xl">
+                <p className="text-white/90 text-xl lg:text-2xl font-semibold">You know the type.</p>
+                <p>The person who says <em className="text-[#E05A1A] font-semibold">"I used to own three properties."</em> The founder who <em className="text-[#E05A1A] font-semibold">"used to run a seven-figure business."</em> The trader who <em className="text-[#E05A1A] font-semibold">"used to clear six figures monthly."</em></p>
+                <p className="text-white font-semibold text-lg lg:text-xl">The Old Taker had it all — then lost it.</p>
+                <p>Some of you are scared of becoming one. Some are already on the edge. <strong className="text-white">TFCN 2026 explores the patterns that separate those who compound wealth across cycles from those who reset to zero every few years.</strong></p>
+                
+                <div className="bg-white/5 border-l-4 border-[#E05A1A] p-6 lg:p-8 mt-10">
+                  <p className="text-white font-bold text-lg mb-4">We're covering:</p>
+                  <ul className="space-y-3 text-white/70">
+                    <li className="flex items-start gap-3"><span className="text-[#E05A1A] text-xl flex-shrink-0">•</span><span>How to stay relevant when your industry shifts overnight</span></li>
+                    <li className="flex items-start gap-3"><span className="text-[#E05A1A] text-xl flex-shrink-0">•</span><span>Strategies to avoid going back to zero</span></li>
+                    <li className="flex items-start gap-3"><span className="text-[#E05A1A] text-xl flex-shrink-0">•</span><span>Real stories from people who clawed back (and those who didn't)</span></li>
+                    <li className="flex items-start gap-3"><span className="text-[#E05A1A] text-xl flex-shrink-0">•</span><span>Building systems that survive market collapses, pivots, and personal crises</span></li>
+                  </ul>
+                </div>
+
+                <p className="text-white/60 mt-8">This conversation cuts across Web3, banking, tradfi, tech — <strong className="text-white">if you've ever had money and fear losing it, this room is for you.</strong></p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* CONVENER */}
+      <section id="host" className="py-20 lg:py-32 px-5 lg:px-10 bg-white">
+        <div className="max-w-7xl mx-auto">
+          <div className="grid lg:grid-cols-12 gap-10 lg:gap-16 items-center">
+            <div className="lg:col-span-5 scroll-reveal">
+              <div className="aspect-[4/5] bg-gradient-to-br from-[#0A0A0A] to-[#1a1a1a] relative overflow-hidden">
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <div className="serif italic text-[180px] sm:text-[240px] text-[#E05A1A]/20 leading-none">KC</div>
+                </div>
+                <div className="absolute top-6 left-6 right-6 flex items-center justify-between">
+                  <span className="text-[10px] font-bold tracking-[0.2em] uppercase text-white/60">Convener</span>
+                  <div className="w-8 h-8 bg-[#E05A1A]"></div>
+                </div>
+                <div className="absolute bottom-6 left-6 right-6 text-white">
+                  <div className="text-2xl sm:text-3xl font-bold tracking-tight">Sir K.C Onyekachi</div>
+                  <div className="text-sm text-white/60 mt-1">Sir Khaycee</div>
+                </div>
+              </div>
+            </div>
+            <div className="lg:col-span-7 scroll-reveal">
+              <div className="flex items-center gap-2 mb-6"><div className="w-8 h-px bg-[#E05A1A]"></div><span className="text-[10px] sm:text-xs font-bold tracking-[0.25em] uppercase text-[#E05A1A]">The Convener</span></div>
+              <h2 className="text-3xl sm:text-4xl lg:text-6xl font-bold tracking-[-0.04em] leading-[0.95] mb-8">
+                Hosted by<br/><span className="serif italic font-normal text-[#E05A1A]">Sir K.C Onyekachi.</span>
+              </h2>
+              <div className="space-y-4 text-base sm:text-lg leading-relaxed text-[#0A0A0A]/75">
+                <p>Sir Khaycee is a Web3 growth strategist, ecosystem builder, educator, and founder of <strong className="text-[#0A0A0A] font-semibold">Rebirth Odyssey</strong> — one of the fastest-growing youth-focused Web3 onboarding ecosystems in Africa.</p>
+                <p>Through his systems and community, thousands of young Africans have been introduced to digital opportunities, with students collectively generating <span className="text-[#E05A1A] font-semibold">over $2 million through Web3</span>.</p>
+                <p className="text-[#0A0A0A]/60">He is passionate about finance, digital empowerment, and helping young people build sustainable wealth in the modern internet economy.</p>
+              </div>
+              <div className="grid grid-cols-2 gap-px bg-[#0A0A0A]/10 border border-[#0A0A0A]/10 mt-10 max-w-md">
+                <div className="bg-white p-5"><div className="text-2xl sm:text-3xl font-bold tracking-tight">$2M+</div><div className="text-[10px] font-bold tracking-[0.15em] uppercase text-[#0A0A0A]/50 mt-1">Generated by students</div></div>
+                <div className="bg-white p-5"><div className="text-2xl sm:text-3xl font-bold tracking-tight">1000s</div><div className="text-[10px] font-bold tracking-[0.15em] uppercase text-[#0A0A0A]/50 mt-1">Lives impacted</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* WHAT TO EXPECT */}
+      <section className="py-20 lg:py-32 px-5 lg:px-10 bg-[#F5F2EE]">
+        <div className="max-w-7xl mx-auto">
+          <div className="scroll-reveal mb-16">
+            <div className="flex items-center gap-2 mb-6"><div className="w-8 h-px bg-[#E05A1A]"></div><span className="text-[10px] sm:text-xs font-bold tracking-[0.25em] uppercase text-[#E05A1A]">What to Expect</span></div>
+            <h2 className="text-4xl sm:text-5xl lg:text-7xl font-bold tracking-[-0.04em] leading-[0.95] max-w-4xl">A day built for<br/><span className="serif italic font-normal text-[#E05A1A]">operators only.</span></h2>
+          </div>
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-px bg-[#0A0A0A]/10 border border-[#0A0A0A]/10 scroll-reveal">
+            {[
+              { icon: 'mic', title: 'Power Keynotes', desc: 'Talks from operators who have built, scaled, and exited across cycles. No surface-level fluff — just the playbook.' },
+              { icon: 'users', title: 'Real Conversations', desc: 'Panels and fireside chats where speakers say what they normally only say behind closed doors.' },
+              { icon: 'handshake', title: 'Curated Networking', desc: 'The room is built deliberately. You meet people who matter — investors, founders, and decision-makers in your space.' },
+              { icon: 'book', title: 'Strategic Frameworks', desc: 'Walk away with mental models and playbooks you can apply on Monday morning. Premium attendees get the full TFCN playbook.' },
+              { icon: 'target', title: 'Private Lounge Access', desc: 'Premium attendees get direct access to the speakers, special guests, and host in our exclusive private lounge.' },
+              { icon: 'play', title: 'Lifetime Replays', desc: 'Premium ticket holders receive full HD recordings of every session — rewatch, share with your team, build your archive.' },
+            ].map((item, i) => (
+              <div key={i} className="bg-white p-8 lg:p-10 hover-lift group transition-colors duration-300 hover:bg-[#FAFAF7]">
+                <div className="w-12 h-12 bg-[#0A0A0A] text-[#E05A1A] flex items-center justify-center mb-6 group-hover:bg-[#E05A1A] group-hover:text-white transition-all duration-300">
+                  <Icon name={item.icon} size={20} strokeWidth={2}/>
+                </div>
+                <h3 className="text-xl font-bold tracking-tight mb-3">{item.title}</h3>
+                <p className="text-sm text-[#0A0A0A]/65 leading-relaxed">{item.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* WHO SHOULD ATTEND */}
+      <section className="py-20 lg:py-32 px-5 lg:px-10 bg-white">
+        <div className="max-w-7xl mx-auto">
+          <div className="grid lg:grid-cols-12 gap-10 lg:gap-20 items-start">
+            <div className="lg:col-span-5 scroll-reveal lg:sticky lg:top-32">
+              <div className="flex items-center gap-2 mb-6"><div className="w-8 h-px bg-[#E05A1A]"></div><span className="text-[10px] sm:text-xs font-bold tracking-[0.25em] uppercase text-[#E05A1A]">Who Should Attend</span></div>
+              <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-[-0.04em] leading-[0.95] mb-6">Built for<br/><span className="serif italic font-normal text-[#E05A1A]">the serious.</span></h2>
+              <p className="text-base sm:text-lg text-[#0A0A0A]/65 leading-relaxed">If you're tired of motivational fluff and ready to be in the room with people who actually move money — this is your invitation.</p>
+            </div>
+            <div className="lg:col-span-7 scroll-reveal">
+              <div className="space-y-px bg-[#0A0A0A]/10 border border-[#0A0A0A]/10">
+                {[
+                  { n: '01', title: 'Founders & Operators', desc: 'Building real businesses and want to think about capital, cycles, and long-term wealth.' },
+                  { n: '02', title: 'Investors & Allocators', desc: 'Deploying capital in African markets and looking to deepen your edge.' },
+                  { n: '03', title: 'Finance & Web3 Professionals', desc: 'Working in TradFi, DeFi, or anywhere the two intersect.' },
+                  { n: '04', title: 'High-Performance Creators', desc: 'Earning seriously online and ready to convert income into long-term wealth.' },
+                  { n: '05', title: 'Ambitious Students & Graduates', desc: 'Hungry to understand how the financial world actually works, before everyone else does.' },
+                ].map((item, i) => (
+                  <div key={i} className="bg-white p-6 lg:p-8 hover-lift group transition-colors duration-300 hover:bg-[#FAFAF7]">
+                    <div className="flex items-start gap-5 lg:gap-7">
+                      <div className="text-2xl lg:text-3xl font-bold text-[#E05A1A] serif italic font-normal flex-shrink-0">{item.n}</div>
+                      <div className="flex-1">
+                        <h3 className="text-lg lg:text-xl font-bold tracking-tight mb-2">{item.title}</h3>
+                        <p className="text-sm lg:text-base text-[#0A0A0A]/60 leading-relaxed">{item.desc}</p>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* COUNTDOWN */}
+      <section className="py-16 lg:py-24 px-5 lg:px-10 bg-[#0A0A0A] text-white">
+        <div className="max-w-7xl mx-auto">
+          <div className="grid lg:grid-cols-12 gap-10 items-center">
+            <div className="lg:col-span-5 scroll-reveal">
+              <div className="flex items-center gap-2 mb-6"><div className="w-8 h-px bg-[#E05A1A]"></div><span className="text-[10px] sm:text-xs font-bold tracking-[0.25em] uppercase text-[#E05A1A]">Countdown</span></div>
+              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-[-0.04em] leading-[0.95]">The cycle<br/><span className="serif italic font-normal text-[#E05A1A]">starts soon.</span></h2>
+              <p className="text-base text-white/60 mt-5 max-w-md">July 25, 2026. Lagos. The room that reads the cycle first.</p>
+            </div>
+            <div className="lg:col-span-7 scroll-reveal">
+              <Countdown/>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* TICKETS */}
+      <section id="tickets" className="py-20 lg:py-32 px-5 lg:px-10 bg-[#F5F2EE]">
+        <div className="max-w-7xl mx-auto">
+          <div className="grid lg:grid-cols-12 gap-10 mb-16 items-end">
+            <div className="lg:col-span-7 scroll-reveal">
+              <div className="flex items-center gap-2 mb-6"><div className="w-8 h-px bg-[#E05A1A]"></div><span className="text-[10px] sm:text-xs font-bold tracking-[0.25em] uppercase text-[#E05A1A]">Access Tiers</span></div>
+              <h2 className="text-4xl sm:text-5xl lg:text-7xl font-bold tracking-[-0.04em] leading-[0.95]">Pick your<br/><span className="serif italic font-normal text-[#E05A1A]">way in.</span></h2>
+            </div>
+            <div className="lg:col-span-5 scroll-reveal">
+              <p className="text-base sm:text-lg text-[#0A0A0A]/70 leading-relaxed">Apply for free admission, or upgrade to Premium for instant approved access and the full experience.</p>
+            </div>
+          </div>
+
+          <div className="grid md:grid-cols-2 gap-px bg-[#0A0A0A]/10 border border-[#0A0A0A]/10 scroll-reveal">
+
+            {/* FREE TIER */}
+            <div className="bg-white p-8 lg:p-12 hover-lift relative transition-colors duration-300 hover:bg-[#FAFAF7]">
+              <div className="mb-6 pb-6 border-b border-[#0A0A0A]/10 flex items-start justify-between gap-4">
+                <div>
+                  <div className="text-xs font-bold tracking-[0.2em] uppercase text-[#E05A1A] mb-2">Free Tier</div>
+                  <div className="text-xs text-[#0A0A0A]/50 font-medium">Application required</div>
+                </div>
+                <div className="w-10 h-10 border-2 border-[#0A0A0A]/10 flex items-center justify-center text-[#0A0A0A]/40"><Icon name="lock" size={14}/></div>
+              </div>
+              <div className="mb-8">
+                <div className="text-6xl lg:text-7xl font-bold tracking-[-0.05em] text-[#0A0A0A] mb-2">Free</div>
+                <p className="text-sm text-[#0A0A0A]/50">Approval-based admission</p>
+              </div>
+              <ul className="space-y-3 mb-10" style={{ minHeight: '200px' }}>
+                {['Full event access', 'All main-stage sessions & panels', 'Open networking floor', 'Live audience Q&A participation'].map((feat, i) => (
+                  <li key={i} className="flex items-start gap-3 text-sm leading-relaxed">
+                    <Icon name="check" size={14} strokeWidth={2.5} className="mt-1 flex-shrink-0 text-[#E05A1A]"/>
+                    <span className="text-[#0A0A0A]/75">{feat}</span>
+                  </li>
+                ))}
+              </ul>
+              <a href="#register" className="block w-full text-center py-4 text-sm font-semibold tracking-tight bg-[#0A0A0A] text-white hover:bg-[#E05A1A] transition-all duration-300">
+                <span className="inline-flex items-center gap-2">Apply for Free Tier <Icon name="arrow" size={12}/></span>
+              </a>
+            </div>
+
+            {/* PREMIUM TIER */}
+            <div className="bg-[#0A0A0A] text-white p-8 lg:p-12 hover-lift relative transition-colors duration-300 hover:bg-[#111]">
+              <div className="absolute -top-px right-0 bg-[#E05A1A] text-white text-[10px] font-bold tracking-[0.2em] uppercase px-3 py-1.5">Instant Access</div>
+              <div className="mb-6 pb-6 border-b border-white/10 flex items-start justify-between gap-4">
+                <div>
+                  <div className="text-xs font-bold tracking-[0.2em] uppercase text-[#E05A1A] mb-2">Premium Tier</div>
+                  <div className="text-xs text-white/50 font-medium">Skip the application</div>
+                </div>
+                <div className="w-10 h-10 border-2 border-white/20 flex items-center justify-center text-[#E05A1A]"><Icon name="star" size={14} strokeWidth={2}/></div>
+              </div>
+              <div className="mb-8">
+                <div className="flex items-baseline gap-2">
+                  <div className="text-6xl lg:text-7xl font-bold tracking-[-0.05em] text-white">₦75,000</div>
+                </div>
+                <p className="text-sm text-white/50 mt-2">Instant confirmation · Pay and you're in</p>
+              </div>
+              <ul className="space-y-3 mb-10">
+                {[
+                  'Everything in Free Tier',
+                  'Instant approved access (no waiting)',
+                  'Premium meal + welcome cocktail',
+                  'Access to speakers, special guests & host private lounge',
+                  'Full HD post-event recordings',
+                  'Private alumni group (year-round)',
+                  'Exclusive TFCN playbook, curated reading list & framework templates',
+                ].map((feat, i) => (
+                  <li key={i} className="flex items-start gap-3 text-sm leading-relaxed">
+                    <Icon name="check" size={14} strokeWidth={2.5} className="mt-1 flex-shrink-0 text-[#E05A1A]"/>
+                    <span className="text-white/80">{feat}</span>
+                  </li>
+                ))}
+              </ul>
+              <a href="#register" className="block w-full text-center py-4 text-sm font-semibold tracking-tight bg-[#E05A1A] text-white hover:bg-white hover:text-[#0A0A0A] transition-all duration-300">
+                <span className="inline-flex items-center gap-2">Get Premium Now <Icon name="arrow" size={12}/></span>
+              </a>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      {/* SPONSORSHIP */}
+      <section className="py-20 lg:py-32 px-5 lg:px-10 bg-white">
+        <div className="max-w-5xl mx-auto text-center scroll-reveal">
+          <div className="inline-flex items-center gap-2 mb-6"><div className="w-8 h-px bg-[#E05A1A]"></div><span className="text-[10px] sm:text-xs font-bold tracking-[0.25em] uppercase text-[#E05A1A]">Partnership</span><div className="w-8 h-px bg-[#E05A1A]"></div></div>
+          <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-[-0.04em] leading-[0.95] mb-8">
+            Partner with<br/><span className="serif italic font-normal text-[#E05A1A]">TFCN 2026.</span>
+          </h2>
+          <p className="text-base sm:text-lg text-[#0A0A0A]/70 leading-relaxed mb-10 max-w-2xl mx-auto">
+            Every partnership tier is an invitation to shape how Africa's next generation of operators think about capital, cycles, and wealth.
+          </p>
+          <p className="text-sm sm:text-base text-[#0A0A0A]/60 leading-relaxed mb-12 max-w-2xl mx-auto">
+            This is more than sponsorship — it's <strong className="text-[#0A0A0A] font-semibold">partnership for lasting impact</strong>, where your presence aligns you with the operators building Africa's financial future.
+          </p>
+          <a href="mailto:partners@tfcn.network" className="inline-flex items-center gap-2 bg-[#0A0A0A] text-white px-8 py-4 text-sm font-semibold hover:bg-[#E05A1A] transition-all duration-300">
+            Request Sponsorship Deck <Icon name="arrow" size={14}/>
+          </a>
+        </div>
+      </section>
+
+      {/* FAQ */}
+      <section id="faq" className="py-20 lg:py-32 px-5 lg:px-10 bg-[#F5F2EE]">
+        <div className="max-w-5xl mx-auto">
+          <div className="scroll-reveal mb-12 lg:mb-16">
+            <div className="flex items-center gap-2 mb-6"><div className="w-8 h-px bg-[#E05A1A]"></div><span className="text-[10px] sm:text-xs font-bold tracking-[0.25em] uppercase text-[#E05A1A]">Common Questions</span></div>
+            <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-[-0.04em] leading-[0.95]">
+              Frequently asked<br/><span className="serif italic font-normal text-[#E05A1A]">questions.</span>
+            </h2>
+          </div>
+          <div className="scroll-reveal">
+            {faqs.map((f, i) => (
+              <FAQItem key={i} q={f.q} a={f.a} open={openFaq === i} onClick={() => setOpenFaq(openFaq === i ? -1 : i)}/>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* REGISTER */}
+      <section id="register" className="py-20 lg:py-32 px-5 lg:px-10 bg-white">
+        <div className="max-w-6xl mx-auto">
+          <div className="grid lg:grid-cols-12 gap-10 lg:gap-20">
+            <div className="lg:col-span-5 scroll-reveal">
+              <div className="flex items-center gap-2 mb-6"><div className="w-8 h-px bg-[#E05A1A]"></div><span className="text-[10px] sm:text-xs font-bold tracking-[0.25em] uppercase text-[#E05A1A]">Register Now</span></div>
+              <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-[-0.04em] leading-[0.95] mb-7">Take your<br/><span className="serif italic font-normal text-[#E05A1A]">seat.</span></h2>
+              <p className="text-base sm:text-lg text-[#0A0A0A]/70 leading-relaxed mb-10">Premium gives you instant access. Free tier applications are reviewed within 5 business days.</p>
+              <div className="space-y-4">
+                {[
+                  { label: 'Operators-only room', desc: 'Every attendee is screened or verified through payment.' },
+                  { label: 'Real strategy. Real connections.', desc: 'No fluff sessions. Only conversations that move the needle.' },
+                  { label: 'Premium = instant. Free = curated.', desc: 'Pick the path that works for you.' },
+                ].map((item, i) => (
+                  <div key={i} className="flex gap-4 group">
+                    <div className="w-1 bg-[#E05A1A] group-hover:bg-[#0A0A0A] transition-colors duration-300"></div>
+                    <div className="flex-1 pb-1">
+                      <div className="text-base font-semibold text-[#0A0A0A] mb-1">{item.label}</div>
+                      <div className="text-sm text-[#0A0A0A]/60">{item.desc}</div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="lg:col-span-7 scroll-reveal">
+              {!submitted ? (
+                <form onSubmit={handleSubmit} className="bg-[#F5F2EE] p-7 lg:p-12">
+                  <h3 className="text-2xl font-bold tracking-tight mb-7">Registration</h3>
+                  <div className="grid grid-cols-2 gap-4 mb-1">
+                    <Input label="First Name" value={form.firstName} onChange={(v) => setForm({...form, firstName: v})} placeholder="First" required/>
+                    <Input label="Last Name" value={form.lastName} onChange={(v) => setForm({...form, lastName: v})} placeholder="Last" required/>
+                  </div>
+                  <Input label="Email Address" type="email" value={form.email} onChange={(v) => setForm({...form, email: v})} placeholder="your@email.com" required/>
+                  <Input label="Phone Number" type="tel" value={form.phone} onChange={(v) => setForm({...form, phone: v})} placeholder="+234 ..."/>
+                  <div className="mb-4">
+                    <label className="block text-[10px] font-bold tracking-[0.2em] uppercase text-[#0A0A0A]/50 mb-2.5">Select Tier</label>
+                    <select value={form.tier} onChange={(e) => setForm({...form, tier: e.target.value})} className="w-full bg-white border-0 border-b-2 border-[#0A0A0A]/10 focus:border-[#E05A1A] text-base font-medium py-3 px-4 outline-none transition-colors duration-300" style={{ borderRadius: 0, appearance: 'none' }} required>
+                      <option value="" disabled>Choose your tier</option>
+                      <option>Free Tier (Application)</option>
+                      <option>Premium Tier — ₦75,000 (Instant)</option>
+                    </select>
+                  </div>
+                  <Input label="Organization (Optional)" value={form.org} onChange={(v) => setForm({...form, org: v})} placeholder="Where do you work or invest?"/>
+                  <button type="submit" className="mt-5 w-full bg-[#0A0A0A] text-white py-5 text-sm font-semibold tracking-tight hover:bg-[#E05A1A] transition-all duration-300 inline-flex items-center justify-center gap-2">
+                    {form.tier === 'Premium Tier — ₦75,000 (Instant)' ? 'Proceed to Payment' : 'Submit Application'} <Icon name="arrow" size={14}/>
+                  </button>
+                  <p className="text-xs text-[#0A0A0A]/40 text-center mt-4">Premium tier holders skip the queue. Free tier applications reviewed within 5 days.</p>
+                </form>
+              ) : (
+                <div className="bg-[#0A0A0A] text-white p-10 lg:p-16 animate-fadeUp">
+                  <div className="w-16 h-16 bg-[#E05A1A] flex items-center justify-center mb-7"><Icon name="check" size={28} strokeWidth={3} className="text-white"/></div>
+                  <h3 className="text-4xl sm:text-5xl font-bold tracking-[-0.04em] mb-5">You're <span className="serif italic font-normal text-[#E05A1A]">in.</span></h3>
+                  <p className="text-base sm:text-lg text-white/70 leading-relaxed mb-7">Welcome to TFCN 2026. We've received your submission and will be in touch via email shortly.</p>
+                  <p className="text-xs sm:text-sm text-white/40 tracking-[0.1em] uppercase">See you in Lagos, 25 July 2026. — The TFCN Team</p>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* CLOSING */}
+      <section className="py-24 lg:py-32 px-5 lg:px-10 bg-[#0A0A0A] text-white text-center relative overflow-hidden">
+        <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: 'linear-gradient(#fff 1px, transparent 1px), linear-gradient(90deg, #fff 1px, transparent 1px)', backgroundSize: '60px 60px' }}/>
+        <div className="max-w-5xl mx-auto relative scroll-reveal">
+          <p className="serif italic text-2xl sm:text-4xl lg:text-6xl leading-tight text-white/90 mb-12">
+            "Don't become the person<br/>who says <span className="text-[#E05A1A]">'I used to have...'</span>"
+          </p>
+          <p className="text-base sm:text-lg text-white/60 mb-12 max-w-2xl mx-auto">TFCN 2026 · The Old Taker · 25 July · Lagos</p>
+          <a href="#register" className="inline-flex items-center gap-2 bg-[#E05A1A] text-white px-8 py-5 text-sm font-bold tracking-[0.1em] uppercase hover:bg-white hover:text-[#0A0A0A] transition-all duration-300">
+            Secure Your Seat <Icon name="arrow" size={14}/>
+          </a>
+        </div>
+      </section>
+
+      {/* FOOTER */}
+      <footer className="bg-[#0A0A0A] text-white pt-16 lg:pt-20 pb-10 px-5 lg:px-10 border-t border-white/10">
+        <div className="max-w-7xl mx-auto">
+          <div className="grid lg:grid-cols-12 gap-10 mb-12">
+            <div className="lg:col-span-6">
+              <div className="flex items-center gap-3 mb-6 text-white">
+                <Logo size={40}/>
+                <div>
+                  <div className="text-base font-bold tracking-tight">The <span className="text-[#E05A1A]">Finance</span> Cycle Network</div>
+                  <div className="text-xs text-white/40 mt-0.5">Edition 3.0 · 2026</div>
+                </div>
+              </div>
+              <p className="text-sm text-white/50 max-w-md leading-relaxed">Africa's most curated finance gathering. Built for operators who read cycles before the crowd notices.</p>
+            </div>
+            <div className="lg:col-span-3">
+              <div className="text-xs font-bold tracking-[0.2em] uppercase text-[#E05A1A] mb-4">Event</div>
+              <ul className="space-y-3 text-sm text-white/60">
+                <li>TFCN 2026 — The Old Taker</li>
+                <li>25 July 2026</li>
+                <li>Lagos, Nigeria</li>
+                <li>Convener: Sir K.C Onyekachi</li>
+              </ul>
+            </div>
+            <div className="lg:col-span-3">
+              <div className="text-xs font-bold tracking-[0.2em] uppercase text-[#E05A1A] mb-4">Connect</div>
+              <ul className="space-y-3 text-sm text-white/60">
+                <li><a href="#" className="hover:text-white transition-colors">Instagram</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">Twitter / X</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">LinkedIn</a></li>
+                <li><a href="mailto:hello@tfcn.network" className="hover:text-white transition-colors">hello@tfcn.network</a></li>
+              </ul>
+            </div>
+          </div>
+          <div className="pt-7 border-t border-white/10 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+            <p className="text-xs text-white/40 tracking-wider">© 2026 The Finance Cycle Network. All rights reserved.</p>
+            <p className="text-xs text-white/40 tracking-[0.15em] uppercase">Designed for the old taker in all of us</p>
+          </div>
+        </div>
+      </footer>
+
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+</script>
+</body>
+</html>
