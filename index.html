@@ -248,27 +248,11 @@ function App() {
             <p className="text-base sm:text-lg text-[#0A0A0A]/75 leading-relaxed font-medium">Seats are limited. Free access is curated, apply and be reviewed. <span className="text-[#E05A1A]">Premium is instant</span> and filling fast.</p>
           </div>
 
-          {/* CTAs */}
-          <div className="animate-fadeUp delay-300 flex flex-col sm:flex-row gap-3 mb-16">
-            <a href="#register" className="magnetic-btn inline-flex items-center justify-center gap-2 bg-[#0A0A0A] text-white px-7 py-4 text-sm font-semibold hover:bg-[#E05A1A] transition-all duration-300">
-              Apply for Free Tier <Icon name="arrow" size={14}/>
+          {/* CTA */}
+          <div className="animate-fadeUp delay-300">
+            <a href="#register" className="magnetic-btn inline-flex items-center gap-2 bg-[#0A0A0A] text-white px-8 py-4 text-sm font-semibold hover:bg-[#E05A1A] transition-all duration-300">
+              Secure Your Seat <Icon name="arrow" size={14}/>
             </a>
-            <a href="#tickets" className="inline-flex items-center justify-center gap-2 border border-[#0A0A0A]/20 text-[#0A0A0A] px-7 py-4 text-sm font-semibold rounded-full hover:bg-[#0A0A0A] hover:text-white hover:border-[#0A0A0A] transition-all duration-300">Get Premium</a>
-          </div>
-
-          {/* Stat bar */}
-          <div className="animate-fadeUp delay-500 grid grid-cols-2 lg:grid-cols-4 gap-px bg-[#0A0A0A]/10 border border-[#0A0A0A]/10">
-            {[
-              { icon: 'calendar', label: 'Date', value: '23 July 2026' },
-              { icon: 'pin', label: 'Location', value: 'Lagos, Nigeria' },
-              { icon: 'users', label: 'Format', value: 'Free + Premium' },
-              { icon: 'trend', label: 'Edition', value: '3.0: Old Taker' },
-            ].map((item, i) => (
-              <div key={i} className="bg-[#F5F2EE] p-4 lg:p-6 hover:bg-white transition-colors duration-300">
-                <div className="flex items-center gap-2 mb-2 text-[#E05A1A]"><Icon name={item.icon} size={12} strokeWidth={2.5}/><span className="text-[9px] sm:text-[10px] font-bold tracking-[0.2em] uppercase">{item.label}</span></div>
-                <div className="font-bold text-[#0A0A0A] text-sm sm:text-base lg:text-lg tracking-tight">{item.value}</div>
-              </div>
-            ))}
           </div>
         </div>
       </section>
