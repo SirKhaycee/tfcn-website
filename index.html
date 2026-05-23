@@ -38,8 +38,15 @@
   .ticker { display: flex; animation: ticker 20s linear infinite; white-space: nowrap; }
   .scroll-reveal { opacity: 0; transform: translateY(60px); transition: opacity 1s cubic-bezier(0.16, 1, 0.3, 1), transform 1s cubic-bezier(0.16, 1, 0.3, 1); }
   .scroll-reveal.in-view { opacity: 1; transform: translateY(0); }
-  .hover-lift { transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
-  .hover-lift:hover { transform: translateY(-6px); }
+  .hover-lift { transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
+  .hover-lift:hover { transform: translateY(-6px); box-shadow: 0 24px 64px rgba(0,0,0,0.1); }
+  .nav-link { position: relative; }
+  .nav-link::after { content: ''; position: absolute; bottom: -1px; left: 0; width: 0; height: 1.5px; background: #E05A1A; transition: width 0.35s cubic-bezier(0.16, 1, 0.3, 1); }
+  .nav-link:hover::after { width: 100%; }
+  @keyframes menuSlide { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+  @keyframes menuLinkIn { from { opacity: 0; transform: translateX(24px); } to { opacity: 1; transform: translateX(0); } }
+  .menu-slide { animation: menuSlide 0.45s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+  .menu-link-in { animation: menuLinkIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; opacity: 0; }
   .magnetic-btn { position: relative; overflow: hidden; border-radius: 9999px; transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
   .magnetic-btn::before { content: ''; position: absolute; inset: 0; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent); transform: translateX(-100%); transition: transform 0.6s; }
   .magnetic-btn:hover::before { transform: translateX(100%); }
@@ -52,7 +59,7 @@
 <div id="root"></div>
 
 <script type="text/babel" data-presets="react">
-const { useState, useEffect } = React;
+const { useState, useEffect, useRef } = React;
 
 function Icon({ name, size = 16, className = '', strokeWidth = 2 }) {
   const i = {
@@ -73,8 +80,67 @@ function Icon({ name, size = 16, className = '', strokeWidth = 2 }) {
     coffee: <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M17 8h1a4 4 0 010 8h-1"/><path d="M3 8h14v9a4 4 0 01-4 4H7a4 4 0 01-4-4z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg>,
     star: <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round" className={className}><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>,
     lock: <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round" className={className}><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>,
+    x: <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round" className={className}><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>,
+    menu: <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round" className={className}><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>,
   };
   return i[name] || null;
+}
+
+function TiltCard({ children, className, style, ...props }) {
+  const ref = useRef(null);
+  const handleMove = (e) => {
+    const el = ref.current;
+    const rect = el.getBoundingClientRect();
+    const x = (e.clientX - rect.left) / rect.width - 0.5;
+    const y = (e.clientY - rect.top) / rect.height - 0.5;
+    el.style.transform = `perspective(900px) rotateX(${-y * 5}deg) rotateY(${x * 5}deg) translateY(-6px)`;
+    el.style.boxShadow = `${-x * 24}px ${-y * 24}px 48px rgba(0,0,0,0.1)`;
+    el.style.borderColor = '#E05A1A';
+  };
+  const handleLeave = (e) => {
+    const el = e.currentTarget;
+    el.style.transform = '';
+    el.style.boxShadow = '';
+    el.style.borderColor = '';
+  };
+  return (
+    <div ref={ref} className={className} style={{ transition: 'transform 0.35s ease, box-shadow 0.35s ease, border-color 0.3s', ...style }} onMouseMove={handleMove} onMouseLeave={handleLeave} {...props}>
+      {children}
+    </div>
+  );
+}
+
+function MobileMenu({ onClose }) {
+  const links = [['#about', 'About'], ['#host', 'Convener'], ['#tickets', 'Tickets'], ['#faq', 'FAQ']];
+  useEffect(() => {
+    document.body.style.overflow = 'hidden';
+    return () => { document.body.style.overflow = ''; };
+  }, []);
+  return (
+    <div className="menu-slide fixed inset-0 z-50 bg-[#0A0A0A] flex flex-col">
+      <div className="flex items-center justify-between px-5 py-5 border-b border-white/10">
+        <a href="#" className="text-white flex items-center gap-2.5"><Logo size={28}/></a>
+        <button onClick={onClose} className="w-10 h-10 flex items-center justify-center text-white/70 hover:text-white transition-colors">
+          <Icon name="x" size={22} strokeWidth={2}/>
+        </button>
+      </div>
+      <nav className="flex-1 px-6 py-8 flex flex-col justify-center space-y-1">
+        {links.map(([href, label], i) => (
+          <a key={i} href={href} onClick={onClose}
+            className="menu-link-in block text-4xl sm:text-5xl font-bold text-white/50 hover:text-white py-4 border-b border-white/10 transition-colors duration-300"
+            style={{ animationDelay: `${0.05 + i * 0.07}s` }}>
+            {label}
+          </a>
+        ))}
+      </nav>
+      <div className="px-6 pb-10 menu-link-in" style={{ animationDelay: '0.35s' }}>
+        <a href="#register" onClick={onClose} className="block w-full text-center bg-[#E05A1A] text-white py-4 font-semibold rounded-full hover:bg-white hover:text-[#0A0A0A] transition-all duration-300 mb-4">
+          Secure Your Seat
+        </a>
+        <p className="text-center text-[10px] font-bold tracking-[0.25em] uppercase text-white/25">Edition 3.0 · Lagos · 23 July 2026</p>
+      </div>
+    </div>
+  );
 }
 
 function Loader({ onComplete }) {
@@ -163,6 +229,7 @@ function Input({ label, value, onChange, placeholder, type = 'text', required = 
 
 function App() {
   const [loaded, setLoaded] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [openFaq, setOpenFaq] = useState(0);
@@ -204,6 +271,7 @@ function App() {
     <div className="min-h-screen bg-[#F5F2EE] text-[#0A0A0A] grain">
 
       {!loaded && <Loader onComplete={() => setLoaded(true)} />}
+      {menuOpen && <MobileMenu onClose={() => setMenuOpen(false)} />}
 
       {/* NAV */}
       <nav className={`fixed top-0 inset-x-0 z-50 transition-all duration-500 ${scrolled ? 'bg-white/85 backdrop-blur-xl border-b border-black/10 py-3' : 'bg-transparent py-5'}`}>
@@ -213,13 +281,16 @@ function App() {
             <span className="text-[13px] font-bold tracking-tight hidden sm:block">The <span className="text-[#E05A1A]">Finance</span> Cycle Network</span>
           </a>
           <div className="flex items-center gap-1">
-            <a href="#about" className="hidden md:block text-sm font-medium text-[#0A0A0A]/60 hover:text-[#0A0A0A] px-4 py-2 transition">About</a>
-            <a href="#host" className="hidden md:block text-sm font-medium text-[#0A0A0A]/60 hover:text-[#0A0A0A] px-4 py-2 transition">Convener</a>
-            <a href="#tickets" className="hidden md:block text-sm font-medium text-[#0A0A0A]/60 hover:text-[#0A0A0A] px-4 py-2 transition">Tickets</a>
-            <a href="#faq" className="hidden md:block text-sm font-medium text-[#0A0A0A]/60 hover:text-[#0A0A0A] px-4 py-2 transition">FAQ</a>
-            <a href="#register" className="inline-flex items-center gap-1.5 bg-[#0A0A0A] text-white px-5 py-2.5 text-xs sm:text-sm font-semibold rounded-full hover:bg-[#E05A1A] transition-all duration-300">
+            <a href="#about" className="nav-link hidden md:block text-sm font-medium text-[#0A0A0A]/60 hover:text-[#0A0A0A] px-4 py-2 transition">About</a>
+            <a href="#host" className="nav-link hidden md:block text-sm font-medium text-[#0A0A0A]/60 hover:text-[#0A0A0A] px-4 py-2 transition">Convener</a>
+            <a href="#tickets" className="nav-link hidden md:block text-sm font-medium text-[#0A0A0A]/60 hover:text-[#0A0A0A] px-4 py-2 transition">Tickets</a>
+            <a href="#faq" className="nav-link hidden md:block text-sm font-medium text-[#0A0A0A]/60 hover:text-[#0A0A0A] px-4 py-2 transition">FAQ</a>
+            <a href="#register" className="hidden md:inline-flex items-center gap-1.5 bg-[#0A0A0A] text-white px-5 py-2.5 text-sm font-semibold rounded-full hover:bg-[#E05A1A] transition-all duration-300">
               Register <Icon name="arrow" size={12}/>
             </a>
+            <button onClick={() => setMenuOpen(true)} className="md:hidden flex items-center justify-center w-10 h-10 text-[#0A0A0A]">
+              <Icon name="menu" size={22} strokeWidth={2}/>
+            </button>
           </div>
         </div>
       </nav>
@@ -384,13 +455,13 @@ function App() {
               { icon: 'target', title: 'Private Lounge Access', desc: 'Premium attendees get direct access to the speakers, special guests, and host in our exclusive private lounge.' },
               { icon: 'play', title: 'Lifetime Replays', desc: 'Premium ticket holders receive full HD recordings of every session. Rewatch, share with your team, build your archive.' },
             ].map((item, i) => (
-              <div key={i} className="bg-white p-8 lg:p-10 hover-lift group transition-colors duration-300 hover:bg-[#FAFAF7]">
+              <TiltCard key={i} className="bg-white p-8 lg:p-10 group border border-transparent" style={{ cursor: 'default' }}>
                 <div className="w-12 h-12 bg-[#0A0A0A] text-[#E05A1A] flex items-center justify-center mb-6 group-hover:bg-[#E05A1A] group-hover:text-white transition-all duration-300">
                   <Icon name={item.icon} size={20} strokeWidth={2}/>
                 </div>
                 <h3 className="text-xl font-bold tracking-tight mb-3">{item.title}</h3>
                 <p className="text-sm text-[#0A0A0A]/65 leading-relaxed">{item.desc}</p>
-              </div>
+              </TiltCard>
             ))}
           </div>
         </div>
