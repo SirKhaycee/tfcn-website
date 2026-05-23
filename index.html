@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>TFCN 2026 — The Old Taker | Edition 3.0</title>
+<title>TFCN 2026: The Old Taker | Edition 3.0</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
 <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
@@ -73,11 +73,7 @@ function Icon({ name, size = 16, className = '', strokeWidth = 2 }) {
 
 function Logo({ size = 32 }) {
   return (
-    <svg width={size} height={size} viewBox="0 0 80 80" fill="none" style={{ flexShrink: 0 }}>
-      <path d="M16 16 L16 64 L64 64" stroke="currentColor" strokeWidth="9" strokeLinecap="square" fill="none"/>
-      <path d="M16 16 L52 16" stroke="currentColor" strokeWidth="9" strokeLinecap="square" fill="none"/>
-      <rect x="46" y="8" width="22" height="22" fill="#E05A1A"/>
-    </svg>
+    <img src="tfcn-logo.svg" width={size} height={size} alt="TFCN Logo" style={{ flexShrink: 0, objectFit: 'contain', display: 'block' }}/>
   );
 }
 
@@ -160,11 +156,11 @@ function App() {
   }, []);
 
   const faqs = [
-    { q: 'What is TFCN 2026?', a: 'The Finance Cycle Network is a curated annual gathering bringing together Africa\'s sharpest financial minds, operators, and capital allocators. The 2026 edition is themed "The Old Taker" — exploring the mindset of those who read cycles and take wealth before the crowd notices.' },
+    { q: 'What is TFCN 2026?', a: 'The Finance Cycle Network is a curated annual gathering bringing together Africa\'s sharpest financial minds, operators, and capital allocators. The 2026 edition is themed "The Old Taker", exploring the mindset of those who read cycles and take wealth before the crowd notices.' },
     { q: 'When and where is the event?', a: 'TFCN 2026 holds on 25th July 2026 in Lagos, Nigeria. The full venue details will be shared with confirmed attendees closer to the date.' },
     { q: 'Why is the Free Tier application-based?', a: 'We curate the room intentionally. To preserve the quality of conversations and networking, free admission requires a short application so we can ensure every attendee adds to the experience. Premium tier holders skip this and get instant access.' },
     { q: 'What\'s the difference between Free and Premium?', a: 'Free Tier gets you into the main event with full session access. Premium Tier (₦75,000) gives you instant approved entry, a premium meal, welcome cocktail, access to the private speakers & host lounge, full HD recordings, lifetime alumni group access, and the exclusive TFCN playbook with reading lists and frameworks.' },
-    { q: 'How do I get my Premium ticket?', a: 'Premium is instant access. You select the Premium Tier, complete payment, and you\'re confirmed immediately — no application or waiting period.' },
+    { q: 'How do I get my Premium ticket?', a: 'Premium is instant access. You select the Premium Tier, complete payment, and you\'re confirmed immediately, no application or waiting period.' },
     { q: 'Who should attend TFCN?', a: 'Entrepreneurs, investors, finance professionals, business operators, and anyone serious about understanding wealth cycles and building long-term capital. If you\'re ready to think like the operators who profit before the headlines, this room is for you.' },
     { q: 'Can my company sponsor TFCN 2026?', a: 'Yes. We offer several partnership tiers for brands looking to align with Africa\'s premier finance gathering. Reach out via the sponsorship contact for the full deck and benefits.' },
     { q: 'Will sessions be recorded?', a: 'Yes. Premium tier holders receive full HD recordings of every session after the event. Free tier holders get access to the live experience only.' },
@@ -207,29 +203,28 @@ function App() {
         </div>
 
         <div className="relative max-w-7xl mx-auto w-full">
-          <div className="animate-fadeUp flex items-center gap-3 mb-8">
-            <div className="w-2 h-2 bg-[#E05A1A] animate-pulse-dot"></div>
-            <span className="text-[10px] sm:text-xs font-bold tracking-[0.25em] uppercase text-[#0A0A0A]/60">Edition 3.0 · Lagos · 25 July 2026</span>
-          </div>
 
-          <h1 className="animate-fadeUp delay-100 font-bold tracking-[-0.05em] leading-[0.9] text-[#0A0A0A] mb-6">
-            <div style={{ fontSize: 'clamp(56px, 12vw, 140px)' }}>TFCN</div>
-            <div style={{ fontSize: 'clamp(56px, 12vw, 140px)' }} className="-mt-2 lg:-mt-4">2026</div>
+
+          {/* Main headline */}
+          <h1 className="animate-fadeUp delay-100 font-bold tracking-[-0.05em] leading-[0.88] text-[#0A0A0A] mb-8 max-w-5xl">
+            <div style={{ fontSize: 'clamp(48px, 9vw, 110px)' }}>Africa's most</div>
+            <div style={{ fontSize: 'clamp(48px, 9vw, 110px)' }} className="serif italic font-normal text-[#E05A1A] -mt-1 lg:-mt-2">curated</div>
+            <div style={{ fontSize: 'clamp(48px, 9vw, 110px)' }} className="-mt-1 lg:-mt-2">finance gathering.</div>
           </h1>
 
-          <div className="animate-fadeUp delay-150 inline-flex items-center gap-2 bg-[#E05A1A] px-4 py-2 mb-6">
-            <span className="text-[10px] sm:text-xs font-bold tracking-[0.2em] uppercase text-white">2026 THEME</span>
-            <span className="text-white text-xs">///</span>
+          {/* Theme thread */}
+          <div className="animate-fadeUp delay-200 flex items-center gap-4 mb-7">
+            <div className="w-10 h-px bg-[#E05A1A]"></div>
+            <span className="text-[10px] sm:text-xs font-bold tracking-[0.2em] uppercase text-[#0A0A0A]/50">2026 Theme</span>
+            <span className="serif italic text-xl sm:text-2xl text-[#E05A1A] font-normal leading-none">The Old Taker</span>
           </div>
 
-          <h2 className="animate-fadeUp delay-200 text-3xl sm:text-4xl lg:text-6xl font-bold tracking-[-0.03em] text-[#0A0A0A] mb-4">
-            <span className="serif italic font-normal text-[#E05A1A]">The Old Taker</span>
-          </h2>
-
-          <div className="animate-fadeUp delay-250 max-w-2xl mb-10">
-            <p className="text-base sm:text-lg lg:text-xl text-[#0A0A0A]/70 leading-relaxed">Don't become the person who says <em>"I used to have..."</em> Africa's most curated finance gathering returns to explore how to build wealth that survives cycles.</p>
+          {/* Sub copy */}
+          <div className="animate-fadeUp delay-300 max-w-xl mb-10">
+            <p className="text-base sm:text-lg text-[#0A0A0A]/65 leading-relaxed">Don't become the person who says <em>"I used to have..."</em> Join the operators who read cycles and build wealth that survives them.</p>
           </div>
 
+          {/* CTAs */}
           <div className="animate-fadeUp delay-300 flex flex-wrap gap-3 mb-16">
             <a href="#register" className="magnetic-btn inline-flex items-center gap-2 bg-[#0A0A0A] text-white px-6 sm:px-7 py-4 text-sm font-semibold hover:bg-[#E05A1A] transition-all duration-300">
               Apply for Free Tier <Icon name="arrow" size={14}/>
@@ -237,12 +232,13 @@ function App() {
             <a href="#tickets" className="inline-flex items-center gap-2 border border-[#0A0A0A]/20 text-[#0A0A0A] px-6 sm:px-7 py-4 text-sm font-semibold hover:bg-[#0A0A0A] hover:text-white hover:border-[#0A0A0A] transition-all duration-300">Get Premium</a>
           </div>
 
+          {/* Stat bar */}
           <div className="animate-fadeUp delay-500 grid grid-cols-2 lg:grid-cols-4 gap-px bg-[#0A0A0A]/10 border border-[#0A0A0A]/10">
             {[
               { icon: 'calendar', label: 'Date', value: '25 July 2026' },
               { icon: 'pin', label: 'Location', value: 'Lagos, Nigeria' },
               { icon: 'users', label: 'Format', value: 'Free + Premium' },
-              { icon: 'trend', label: 'Edition', value: '3.0 — Old Taker' },
+              { icon: 'trend', label: 'Edition', value: '3.0: Old Taker' },
             ].map((item, i) => (
               <div key={i} className="bg-[#F5F2EE] p-4 lg:p-6 hover:bg-white transition-colors duration-300">
                 <div className="flex items-center gap-2 mb-2 text-[#E05A1A]"><Icon name={item.icon} size={12} strokeWidth={2.5}/><span className="text-[9px] sm:text-[10px] font-bold tracking-[0.2em] uppercase">{item.label}</span></div>
@@ -276,7 +272,7 @@ function App() {
             </div>
             <div className="lg:col-span-7 scroll-reveal">
               <div className="space-y-5 text-base sm:text-lg lg:text-xl leading-[1.7] text-[#0A0A0A]/75">
-                <p><strong className="text-[#0A0A0A] font-semibold">The Finance Cycle Network (TFCN)</strong> is an annual gathering of Africa's sharpest financial minds — operators, capital allocators, and visionaries who refuse to participate in the madness of consensus.</p>
+                <p><strong className="text-[#0A0A0A] font-semibold">The Finance Cycle Network (TFCN)</strong> is an annual gathering of Africa's sharpest financial minds: operators, capital allocators, and visionaries who refuse to participate in the madness of consensus.</p>
                 <p>Every year, we explore a new theme that cuts to the core of what it means to build and sustain wealth in a world of endless noise.</p>
                 <p className="text-[#0A0A0A]/60">No fluff. No motivational theatre. Just the patterns of those who have seen empires rise, markets fall, and wealth quietly compound through cycles.</p>
               </div>
@@ -303,7 +299,7 @@ function App() {
               <div className="space-y-6 text-base sm:text-lg lg:text-xl leading-relaxed text-white/75 max-w-4xl">
                 <p className="text-white/90 text-xl lg:text-2xl font-semibold">You know the type.</p>
                 <p>The person who says <em className="text-[#E05A1A] font-semibold">"I used to own three properties."</em> The founder who <em className="text-[#E05A1A] font-semibold">"used to run a seven-figure business."</em> The trader who <em className="text-[#E05A1A] font-semibold">"used to clear six figures monthly."</em></p>
-                <p className="text-white font-semibold text-lg lg:text-xl">The Old Taker had it all — then lost it.</p>
+                <p className="text-white font-semibold text-lg lg:text-xl">The Old Taker had it all. Then lost it.</p>
                 <p>Some of you are scared of becoming one. Some are already on the edge. <strong className="text-white">TFCN 2026 explores the patterns that separate those who compound wealth across cycles from those who reset to zero every few years.</strong></p>
                 
                 <div className="bg-white/5 border-l-4 border-[#E05A1A] p-6 lg:p-8 mt-10">
@@ -316,7 +312,7 @@ function App() {
                   </ul>
                 </div>
 
-                <p className="text-white/60 mt-8">This conversation cuts across Web3, banking, tradfi, tech — <strong className="text-white">if you've ever had money and fear losing it, this room is for you.</strong></p>
+                <p className="text-white/60 mt-8">This conversation cuts across Web3, banking, tradfi, tech. <strong className="text-white">if you've ever had money and fear losing it, this room is for you.</strong></p>
               </div>
             </div>
           </div>
@@ -348,7 +344,7 @@ function App() {
                 Hosted by<br/><span className="serif italic font-normal text-[#E05A1A]">Sir K.C Onyekachi.</span>
               </h2>
               <div className="space-y-4 text-base sm:text-lg leading-relaxed text-[#0A0A0A]/75">
-                <p>Sir Khaycee is a Web3 growth strategist, ecosystem builder, educator, and founder of <strong className="text-[#0A0A0A] font-semibold">Rebirth Odyssey</strong> — one of the fastest-growing youth-focused Web3 onboarding ecosystems in Africa.</p>
+                <p>Sir Khaycee is a Web3 growth strategist, ecosystem builder, educator, and founder of <strong className="text-[#0A0A0A] font-semibold">Rebirth Odyssey</strong>, one of the fastest-growing youth-focused Web3 onboarding ecosystems in Africa.</p>
                 <p>Through his systems and community, thousands of young Africans have been introduced to digital opportunities, with students collectively generating <span className="text-[#E05A1A] font-semibold">over $2 million through Web3</span>.</p>
                 <p className="text-[#0A0A0A]/60">He is passionate about finance, digital empowerment, and helping young people build sustainable wealth in the modern internet economy.</p>
               </div>
@@ -370,12 +366,12 @@ function App() {
           </div>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-px bg-[#0A0A0A]/10 border border-[#0A0A0A]/10 scroll-reveal">
             {[
-              { icon: 'mic', title: 'Power Keynotes', desc: 'Talks from operators who have built, scaled, and exited across cycles. No surface-level fluff — just the playbook.' },
+              { icon: 'mic', title: 'Power Keynotes', desc: 'Talks from operators who have built, scaled, and exited across cycles. No surface-level fluff. Just the playbook.' },
               { icon: 'users', title: 'Real Conversations', desc: 'Panels and fireside chats where speakers say what they normally only say behind closed doors.' },
-              { icon: 'handshake', title: 'Curated Networking', desc: 'The room is built deliberately. You meet people who matter — investors, founders, and decision-makers in your space.' },
+              { icon: 'handshake', title: 'Curated Networking', desc: 'The room is built deliberately. You meet people who matter: investors, founders, and decision-makers in your space.' },
               { icon: 'book', title: 'Strategic Frameworks', desc: 'Walk away with mental models and playbooks you can apply on Monday morning. Premium attendees get the full TFCN playbook.' },
               { icon: 'target', title: 'Private Lounge Access', desc: 'Premium attendees get direct access to the speakers, special guests, and host in our exclusive private lounge.' },
-              { icon: 'play', title: 'Lifetime Replays', desc: 'Premium ticket holders receive full HD recordings of every session — rewatch, share with your team, build your archive.' },
+              { icon: 'play', title: 'Lifetime Replays', desc: 'Premium ticket holders receive full HD recordings of every session. Rewatch, share with your team, build your archive.' },
             ].map((item, i) => (
               <div key={i} className="bg-white p-8 lg:p-10 hover-lift group transition-colors duration-300 hover:bg-[#FAFAF7]">
                 <div className="w-12 h-12 bg-[#0A0A0A] text-[#E05A1A] flex items-center justify-center mb-6 group-hover:bg-[#E05A1A] group-hover:text-white transition-all duration-300">
@@ -396,7 +392,7 @@ function App() {
             <div className="lg:col-span-5 scroll-reveal lg:sticky lg:top-32">
               <div className="flex items-center gap-2 mb-6"><div className="w-8 h-px bg-[#E05A1A]"></div><span className="text-[10px] sm:text-xs font-bold tracking-[0.25em] uppercase text-[#E05A1A]">Who Should Attend</span></div>
               <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-[-0.04em] leading-[0.95] mb-6">Built for<br/><span className="serif italic font-normal text-[#E05A1A]">the serious.</span></h2>
-              <p className="text-base sm:text-lg text-[#0A0A0A]/65 leading-relaxed">If you're tired of motivational fluff and ready to be in the room with people who actually move money — this is your invitation.</p>
+              <p className="text-base sm:text-lg text-[#0A0A0A]/65 leading-relaxed">If you're tired of motivational fluff and ready to be in the room with people who actually move money. This is your invitation.</p>
             </div>
             <div className="lg:col-span-7 scroll-reveal">
               <div className="space-y-px bg-[#0A0A0A]/10 border border-[#0A0A0A]/10">
@@ -532,7 +528,7 @@ function App() {
             Every partnership tier is an invitation to shape how Africa's next generation of operators think about capital, cycles, and wealth.
           </p>
           <p className="text-sm sm:text-base text-[#0A0A0A]/60 leading-relaxed mb-12 max-w-2xl mx-auto">
-            This is more than sponsorship — it's <strong className="text-[#0A0A0A] font-semibold">partnership for lasting impact</strong>, where your presence aligns you with the operators building Africa's financial future.
+            This is more than sponsorship. It's <strong className="text-[#0A0A0A] font-semibold">partnership for lasting impact</strong>, where your presence aligns you with the operators building Africa's financial future.
           </p>
           <a href="mailto:partners@tfcn.network" className="inline-flex items-center gap-2 bg-[#0A0A0A] text-white px-8 py-4 text-sm font-semibold hover:bg-[#E05A1A] transition-all duration-300">
             Request Sponsorship Deck <Icon name="arrow" size={14}/>
@@ -597,12 +593,12 @@ function App() {
                     <select value={form.tier} onChange={(e) => setForm({...form, tier: e.target.value})} className="w-full bg-white border-0 border-b-2 border-[#0A0A0A]/10 focus:border-[#E05A1A] text-base font-medium py-3 px-4 outline-none transition-colors duration-300" style={{ borderRadius: 0, appearance: 'none' }} required>
                       <option value="" disabled>Choose your tier</option>
                       <option>Free Tier (Application)</option>
-                      <option>Premium Tier — ₦75,000 (Instant)</option>
+                      <option>Premium Tier: ₦75,000 (Instant)</option>
                     </select>
                   </div>
                   <Input label="Organization (Optional)" value={form.org} onChange={(v) => setForm({...form, org: v})} placeholder="Where do you work or invest?"/>
                   <button type="submit" className="mt-5 w-full bg-[#0A0A0A] text-white py-5 text-sm font-semibold tracking-tight hover:bg-[#E05A1A] transition-all duration-300 inline-flex items-center justify-center gap-2">
-                    {form.tier === 'Premium Tier — ₦75,000 (Instant)' ? 'Proceed to Payment' : 'Submit Application'} <Icon name="arrow" size={14}/>
+                    {form.tier === 'Premium Tier: ₦75,000 (Instant)' ? 'Proceed to Payment' : 'Submit Application'} <Icon name="arrow" size={14}/>
                   </button>
                   <p className="text-xs text-[#0A0A0A]/40 text-center mt-4">Premium tier holders skip the queue. Free tier applications reviewed within 5 days.</p>
                 </form>
@@ -611,7 +607,7 @@ function App() {
                   <div className="w-16 h-16 bg-[#E05A1A] flex items-center justify-center mb-7"><Icon name="check" size={28} strokeWidth={3} className="text-white"/></div>
                   <h3 className="text-4xl sm:text-5xl font-bold tracking-[-0.04em] mb-5">You're <span className="serif italic font-normal text-[#E05A1A]">in.</span></h3>
                   <p className="text-base sm:text-lg text-white/70 leading-relaxed mb-7">Welcome to TFCN 2026. We've received your submission and will be in touch via email shortly.</p>
-                  <p className="text-xs sm:text-sm text-white/40 tracking-[0.1em] uppercase">See you in Lagos, 25 July 2026. — The TFCN Team</p>
+                  <p className="text-xs sm:text-sm text-white/40 tracking-[0.1em] uppercase">See you in Lagos, 25 July 2026. The TFCN Team</p>
                 </div>
               )}
             </div>
@@ -650,7 +646,7 @@ function App() {
             <div className="lg:col-span-3">
               <div className="text-xs font-bold tracking-[0.2em] uppercase text-[#E05A1A] mb-4">Event</div>
               <ul className="space-y-3 text-sm text-white/60">
-                <li>TFCN 2026 — The Old Taker</li>
+                <li>TFCN 2026: The Old Taker</li>
                 <li>25 July 2026</li>
                 <li>Lagos, Nigeria</li>
                 <li>Convener: Sir K.C Onyekachi</li>
