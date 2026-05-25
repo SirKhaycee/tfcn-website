@@ -75,9 +75,18 @@
         {
           "@type": "Offer",
           "name": "Premium Tier",
-          "price": "75000",
+          "price": "80000",
           "priceCurrency": "NGN",
           "url": "https://app.eventpadi.com/e/thefinancecyclenetwork/ep-premium-ti-luu6n/checkout",
+          "availability": "https://schema.org/InStock",
+          "validFrom": "2026-01-01"
+        },
+        {
+          "@type": "Offer",
+          "name": "VIP",
+          "price": "200000",
+          "priceCurrency": "NGN",
+          "url": "https://app.eventpadi.com/e/thefinancecyclenetwork/ep-vip-1nvz2/checkout",
           "availability": "https://schema.org/InStock",
           "validFrom": "2026-01-01"
         }
@@ -590,35 +599,44 @@ function App() {
               <h2 className="text-4xl sm:text-5xl lg:text-7xl font-bold tracking-[-0.04em] leading-[0.95]">Pick your<br/><span className="serif italic font-normal text-[#E05A1A]">way in.</span></h2>
             </div>
             <div className="lg:col-span-5 scroll-reveal">
-              <p className="text-base sm:text-lg text-[#0A0A0A]/70 leading-relaxed">Apply for free admission, or upgrade to Premium for instant approved access and the full experience.</p>
+              <p className="text-base sm:text-lg text-[#0A0A0A]/70 leading-relaxed">Three tiers. One room. Choose the level that fits where you are and where you are going.</p>
             </div>
           </div>
 
-          <div className="grid md:grid-cols-2 gap-px bg-[#0A0A0A]/10 border border-[#0A0A0A]/10 scroll-reveal">
+          <div className="grid lg:grid-cols-3 gap-px bg-[#0A0A0A]/10 border border-[#0A0A0A]/10 scroll-reveal">
 
-            {/* FREE TIER */}
-            <div className="bg-white p-8 lg:p-12 hover-lift relative transition-colors duration-300 hover:bg-[#FAFAF7]">
-              <div className="mb-6 pb-6 border-b border-[#0A0A0A]/10 flex items-start justify-between gap-4">
+            {/* VIP TIER */}
+            <div className="bg-[#E05A1A] text-white p-8 lg:p-12 hover-lift relative transition-all duration-300 hover:brightness-105">
+              <div className="absolute -top-px right-0 bg-[#0A0A0A] text-white text-[10px] font-bold tracking-[0.2em] uppercase px-3 py-1.5">Exclusive</div>
+              <div className="mb-6 pb-6 border-b border-white/20 flex items-start justify-between gap-4">
                 <div>
-                  <div className="text-xs font-bold tracking-[0.2em] uppercase text-[#E05A1A] mb-2">Free Tier</div>
-                  <div className="text-xs text-[#0A0A0A]/50 font-medium">Application required</div>
+                  <div className="text-xs font-bold tracking-[0.2em] uppercase text-white/70 mb-2">VIP</div>
+                  <div className="text-xs text-white/60 font-medium">For Leaders, Founders &amp; Executives.</div>
                 </div>
-                <div className="w-10 h-10 border-2 border-[#0A0A0A]/10 flex items-center justify-center text-[#0A0A0A]/40"><Icon name="lock" size={14}/></div>
+                <div className="w-10 h-10 border-2 border-white/30 flex items-center justify-center text-white"><Icon name="sparkle" size={14} strokeWidth={2}/></div>
               </div>
               <div className="mb-8">
-                <div className="text-6xl lg:text-7xl font-bold tracking-[-0.05em] text-[#0A0A0A] mb-2">Free</div>
-                <p className="text-sm text-[#0A0A0A]/50">Approval-based admission</p>
+                <div className="text-5xl lg:text-6xl font-bold tracking-[-0.05em] text-white">₦200,000</div>
+                <p className="text-sm text-white/60 mt-2">The full TFCN experience</p>
               </div>
-              <ul className="space-y-3 mb-10" style={{ minHeight: '200px' }}>
-                {['Full event access', 'All main-stage sessions & panels', 'Open networking floor', 'Live audience Q&A participation'].map((feat, i) => (
+              <ul className="space-y-3 mb-10">
+                {[
+                  'Everything in Premium Tier',
+                  'Front-row reserved seating',
+                  'Exclusive VIP lounge access',
+                  'Dedicated networking time with speakers & panelists',
+                  'TFCN branded gift box',
+                  'Brand/Company listed in the official event program',
+                  'Priority access to post-event recordings',
+                ].map((feat, i) => (
                   <li key={i} className="flex items-start gap-3 text-sm leading-relaxed">
-                    <Icon name="check" size={14} strokeWidth={2.5} className="mt-1 flex-shrink-0 text-[#E05A1A]"/>
-                    <span className="text-[#0A0A0A]/75">{feat}</span>
+                    <Icon name="check" size={14} strokeWidth={2.5} className="mt-1 flex-shrink-0 text-white"/>
+                    <span className="text-white/85">{feat}</span>
                   </li>
                 ))}
               </ul>
-              <a href="https://app.eventpadi.com/e/thefinancecyclenetwork/ep-free-tier-rgdz8/checkout" target="_blank" rel="noopener noreferrer" className="block w-full text-center py-4 text-sm font-semibold tracking-tight bg-[#0A0A0A] text-white rounded-2xl hover:bg-[#E05A1A] transition-all duration-300">
-                <span className="inline-flex items-center gap-2">Apply for Free Tier <Icon name="arrow" size={12}/></span>
+              <a href="https://app.eventpadi.com/e/thefinancecyclenetwork/ep-vip-1nvz2/checkout" target="_blank" rel="noopener noreferrer" className="block w-full text-center py-4 text-sm font-semibold tracking-tight bg-[#0A0A0A] text-white rounded-2xl hover:bg-white hover:text-[#0A0A0A] transition-all duration-300">
+                <span className="inline-flex items-center gap-2">Get VIP Access <Icon name="arrow" size={12}/></span>
               </a>
             </div>
 
@@ -633,15 +651,14 @@ function App() {
                 <div className="w-10 h-10 border-2 border-white/20 flex items-center justify-center text-[#E05A1A]"><Icon name="star" size={14} strokeWidth={2}/></div>
               </div>
               <div className="mb-8">
-                <div className="flex items-baseline gap-2">
-                  <div className="text-6xl lg:text-7xl font-bold tracking-[-0.05em] text-white">₦75,000</div>
-                </div>
+                <div className="text-5xl lg:text-6xl font-bold tracking-[-0.05em] text-white">₦80,000</div>
                 <p className="text-sm text-white/50 mt-2">Instant confirmation · Pay and you're in</p>
               </div>
               <ul className="space-y-3 mb-10">
                 {[
                   'Everything in Free Tier',
                   'Instant approved access (no waiting)',
+                  'Reserved seating (priority section)',
                   'Premium meal + welcome cocktail',
                   'Access to speakers, special guests & host private lounge',
                   'Full HD post-event recordings',
@@ -656,6 +673,32 @@ function App() {
               </ul>
               <a href="https://app.eventpadi.com/e/thefinancecyclenetwork/ep-premium-ti-luu6n/checkout" target="_blank" rel="noopener noreferrer" className="block w-full text-center py-4 text-sm font-semibold tracking-tight bg-[#E05A1A] text-white rounded-2xl hover:bg-white hover:text-[#0A0A0A] transition-all duration-300">
                 <span className="inline-flex items-center gap-2">Get Premium Now <Icon name="arrow" size={12}/></span>
+              </a>
+            </div>
+
+            {/* FREE TIER */}
+            <div className="bg-white p-8 lg:p-12 hover-lift relative transition-colors duration-300 hover:bg-[#FAFAF7]">
+              <div className="mb-6 pb-6 border-b border-[#0A0A0A]/10 flex items-start justify-between gap-4">
+                <div>
+                  <div className="text-xs font-bold tracking-[0.2em] uppercase text-[#E05A1A] mb-2">Free Tier</div>
+                  <div className="text-xs text-[#0A0A0A]/50 font-medium">Application required</div>
+                </div>
+                <div className="w-10 h-10 border-2 border-[#0A0A0A]/10 flex items-center justify-center text-[#0A0A0A]/40"><Icon name="lock" size={14}/></div>
+              </div>
+              <div className="mb-8">
+                <div className="text-5xl lg:text-6xl font-bold tracking-[-0.05em] text-[#0A0A0A]">Free</div>
+                <p className="text-sm text-[#0A0A0A]/50 mt-2">Approval-based admission</p>
+              </div>
+              <ul className="space-y-3 mb-10">
+                {['Full event access', 'All main-stage sessions & panels', 'Open networking floor', 'Live audience Q&A participation'].map((feat, i) => (
+                  <li key={i} className="flex items-start gap-3 text-sm leading-relaxed">
+                    <Icon name="check" size={14} strokeWidth={2.5} className="mt-1 flex-shrink-0 text-[#E05A1A]"/>
+                    <span className="text-[#0A0A0A]/75">{feat}</span>
+                  </li>
+                ))}
+              </ul>
+              <a href="https://app.eventpadi.com/e/thefinancecyclenetwork/ep-free-tier-rgdz8/checkout" target="_blank" rel="noopener noreferrer" className="block w-full text-center py-4 text-sm font-semibold tracking-tight bg-[#0A0A0A] text-white rounded-2xl hover:bg-[#E05A1A] transition-all duration-300">
+                <span className="inline-flex items-center gap-2">Apply for Free Tier <Icon name="arrow" size={12}/></span>
               </a>
             </div>
 
