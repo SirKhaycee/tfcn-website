@@ -117,12 +117,12 @@ function Logo({ size = 32 }) {
 }
 
 function MobileMenu({ onClose }) {
-  const links = [['index.html#about','About'],['index.html#host','Convener'],['index.html#tickets','Tickets'],['index.html#faq','FAQ'],['blog.html','Blog']];
+  const links = [['/#about','About'],['/#host','Convener'],['/#tickets','Tickets'],['/#faq','FAQ'],['blog.html','Blog']];
   useEffect(() => { document.body.style.overflow = 'hidden'; return () => { document.body.style.overflow = ''; }; }, []);
   return (
     <div className="menu-slide fixed inset-0 z-50 bg-[#0A0A0A] flex flex-col">
       <div className="flex items-center justify-between px-5 py-5 border-b border-white/10">
-        <a href="index.html" className="text-white flex items-center gap-2.5"><Logo size={28}/></a>
+        <a href="/" className="text-white flex items-center gap-2.5"><Logo size={28}/></a>
         <button onClick={onClose} className="w-10 h-10 flex items-center justify-center text-white/70 hover:text-white transition-colors"><Icon name="x" size={22} strokeWidth={2}/></button>
       </div>
       <nav className="flex-1 px-6 py-8 flex flex-col justify-center space-y-1">
@@ -162,14 +162,14 @@ function App() {
       {/* NAV */}
       <nav className={`fixed top-0 inset-x-0 z-40 transition-all duration-500 ${navBg}`}>
         <div className="max-w-7xl mx-auto px-5 lg:px-10 flex items-center justify-between">
-          <a href="index.html" className="flex items-center gap-2.5 text-[#0A0A0A]">
+          <a href="/" className="flex items-center gap-2.5 text-[#0A0A0A]">
             <Logo size={30}/>
             <span className="text-[13px] font-bold tracking-tight hidden sm:block">The <span className="text-[#E05A1A]">Finance</span> Cycle Network</span>
           </a>
           <div className="flex items-center gap-1">
-            <a href="index.html#about" className="nav-link hidden md:block text-sm font-medium text-[#0A0A0A]/60 hover:text-[#0A0A0A] px-4 py-2 transition">About</a>
-            <a href="index.html#host" className="nav-link hidden md:block text-sm font-medium text-[#0A0A0A]/60 hover:text-[#0A0A0A] px-4 py-2 transition">Convener</a>
-            <a href="index.html#tickets" className="nav-link hidden md:block text-sm font-medium text-[#0A0A0A]/60 hover:text-[#0A0A0A] px-4 py-2 transition">Tickets</a>
+            <a href="/#about" className="nav-link hidden md:block text-sm font-medium text-[#0A0A0A]/60 hover:text-[#0A0A0A] px-4 py-2 transition">About</a>
+            <a href="/#host" className="nav-link hidden md:block text-sm font-medium text-[#0A0A0A]/60 hover:text-[#0A0A0A] px-4 py-2 transition">Convener</a>
+            <a href="/#tickets" className="nav-link hidden md:block text-sm font-medium text-[#0A0A0A]/60 hover:text-[#0A0A0A] px-4 py-2 transition">Tickets</a>
             <a href="blog.html" className="nav-link hidden md:block text-sm font-semibold text-[#E05A1A] px-4 py-2 transition">Blog</a>
             <a href="https://app.eventpadi.com/thefinancecyclenetwork" target="_blank" rel="noopener noreferrer" className="hidden md:inline-flex items-center gap-1.5 bg-[#0A0A0A] text-white px-5 py-2.5 text-sm font-semibold rounded-full hover:bg-[#E05A1A] transition-all duration-300">Register <Icon name="arrow" size={12}/></a>
             <button onClick={() => setMenuOpen(true)} className="md:hidden flex items-center justify-center w-10 h-10 text-[#0A0A0A]"><Icon name="menu" size={22} strokeWidth={2}/></button>
