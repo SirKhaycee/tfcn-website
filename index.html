@@ -217,7 +217,7 @@ function TiltCard({ children, className, style, ...props }) {
 }
 
 function MobileMenu({ onClose }) {
-  const links = [['#about', 'About'], ['#host', 'Convener'], ['#tickets', 'Tickets'], ['#faq', 'FAQ'], ['blog.html', 'Blog']];
+  const links = [['/', 'Home'], ['#about', 'About'], ['#host', 'Convener'], ['#tickets', 'Tickets'], ['#faq', 'FAQ'], ['blog.html', 'Blog']];
   useEffect(() => {
     document.body.style.overflow = 'hidden';
     return () => { document.body.style.overflow = ''; };
@@ -239,7 +239,7 @@ function MobileMenu({ onClose }) {
           </a>
         ))}
       </nav>
-      <div className="px-6 pb-10 menu-link-in" style={{ animationDelay: '0.35s' }}>
+      <div className="px-6 pb-10 menu-link-in" style={{ animationDelay: '0.49s' }}>
         <a href="#tickets" onClick={onClose} className="block w-full text-center bg-[#E05A1A] text-white py-4 font-semibold rounded-full hover:bg-white hover:text-[#0A0A0A] transition-all duration-300 mb-4">
           Secure Your Seat
         </a>
@@ -369,6 +369,7 @@ function App() {
             <span className="text-[13px] font-bold tracking-tight hidden sm:block">The <span className="text-[#E05A1A]">Finance</span> Cycle Network</span>
           </a>
           <div className="flex items-center gap-1">
+            <a href="/" className="nav-link hidden md:block text-sm font-medium text-[#0A0A0A]/60 hover:text-[#0A0A0A] px-4 py-2 transition">Home</a>
             <a href="#about" className="nav-link hidden md:block text-sm font-medium text-[#0A0A0A]/60 hover:text-[#0A0A0A] px-4 py-2 transition">About</a>
             <a href="#host" className="nav-link hidden md:block text-sm font-medium text-[#0A0A0A]/60 hover:text-[#0A0A0A] px-4 py-2 transition">Convener</a>
             <a href="#tickets" className="nav-link hidden md:block text-sm font-medium text-[#0A0A0A]/60 hover:text-[#0A0A0A] px-4 py-2 transition">Tickets</a>
