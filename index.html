@@ -437,13 +437,11 @@ function App() {
       {/* ABOUT */}
       <section id="about" className="py-20 lg:py-32 px-5 lg:px-10 bg-[#F5F2EE]">
         <div className="max-w-7xl mx-auto">
-          <div className="grid lg:grid-cols-12 gap-10 lg:gap-20">
-            <div className="lg:col-span-5 scroll-reveal">
+          <div className="grid lg:grid-cols-12 gap-10 lg:gap-16 items-center">
+            <div className="lg:col-span-7 scroll-reveal">
               <div className="flex items-center gap-2 mb-6"><div className="w-8 h-px bg-[#E05A1A]"></div><span className="text-[10px] sm:text-xs font-bold tracking-[0.25em] uppercase text-[#E05A1A]">About TFCN</span></div>
               <h2 className="text-4xl sm:text-5xl lg:text-7xl font-bold tracking-[-0.04em] leading-[0.95] mb-8">One room.<br/><span className="serif italic font-normal text-[#E05A1A]">One theme.</span><br/>Zero noise.</h2>
-            </div>
-            <div className="lg:col-span-7 scroll-reveal">
-              <div className="space-y-5 text-base sm:text-lg lg:text-xl leading-[1.7] text-[#0A0A0A]/75">
+              <div className="space-y-5 text-base sm:text-lg leading-[1.7] text-[#0A0A0A]/75">
                 <p><strong className="text-[#0A0A0A] font-semibold">The Finance Cycle Network (TFCN)</strong> is an annual gathering of Africa's sharpest financial minds: operators, capital allocators, and visionaries who refuse to participate in the madness of consensus.</p>
                 <p>Every year, we explore a new theme that cuts to the core of what it means to build and sustain wealth in a world of endless noise.</p>
                 <p className="text-[#0A0A0A]/60">No fluff. No motivational theatre. Just the patterns of those who have seen empires rise, markets fall, and wealth quietly compound through cycles.</p>
@@ -451,6 +449,12 @@ function App() {
               <a href="#tickets" className="mt-10 inline-flex items-center gap-2 bg-[#0A0A0A] text-white px-7 py-4 text-sm font-semibold rounded-full hover:bg-[#E05A1A] transition-all duration-300">
                 Register for 2026 <Icon name="arrow" size={14}/>
               </a>
+            </div>
+            <div className="lg:col-span-5 scroll-reveal flex justify-center lg:justify-end">
+              <div className="relative" style={{ transform: 'rotate(2deg)', maxWidth: '340px', width: '100%' }}>
+                <div className="absolute inset-0 translate-x-3 translate-y-3 bg-[#E05A1A]/20 rounded-sm"></div>
+                <img src="event-flyer.jpg" alt="TFCN 2026 The Old Taker Event Flyer" className="relative w-full rounded-sm shadow-2xl"/>
+              </div>
             </div>
           </div>
         </div>
