@@ -21,7 +21,7 @@
 <meta property="og:image" content="https://thefinancecyclenetwork.com/tfcn-logo.png">
 <meta property="og:image:width" content="500">
 <meta property="og:image:height" content="500">
-<meta property="og:image:alt" content="The Finance Cycle Network — TFCN 2026">
+<meta property="og:image:alt" content="The Finance Cycle Network | TFCN 2026">
 <!-- Twitter / X -->
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:url" content="https://thefinancecyclenetwork.com/">
@@ -225,7 +225,7 @@ function MobileMenu({ onClose }) {
   return (
     <div className="menu-slide fixed inset-0 z-50 bg-[#0A0A0A] flex flex-col">
       <div className="flex items-center justify-between px-5 py-5 border-b border-white/10">
-        <a href="#" className="text-white flex items-center gap-2.5"><Logo size={28}/></a>
+        <a href="/" className="text-white flex items-center gap-2.5"><Logo size={28}/></a>
         <button onClick={onClose} className="w-10 h-10 flex items-center justify-center text-white/70 hover:text-white transition-colors">
           <Icon name="x" size={22} strokeWidth={2}/>
         </button>
@@ -364,7 +364,7 @@ function App() {
       {/* NAV */}
       <nav className={`fixed top-0 inset-x-0 z-50 transition-all duration-500 ${scrolled ? 'bg-white/85 backdrop-blur-xl border-b border-black/10 py-3' : 'bg-transparent py-5'}`}>
         <div className="max-w-7xl mx-auto px-5 lg:px-10 flex items-center justify-between">
-          <a href="#" className="flex items-center gap-2.5 text-[#0A0A0A]">
+          <a href="/" className="flex items-center gap-2.5 text-[#0A0A0A]">
             <Logo size={30}/>
             <span className="text-[13px] font-bold tracking-tight hidden sm:block">The <span className="text-[#E05A1A]">Finance</span> Cycle Network</span>
           </a>
@@ -496,18 +496,8 @@ function App() {
         <div className="max-w-7xl mx-auto">
           <div className="grid lg:grid-cols-12 gap-10 lg:gap-16 items-center">
             <div className="lg:col-span-5 scroll-reveal">
-              <div className="aspect-[4/5] bg-gradient-to-br from-[#0A0A0A] to-[#1a1a1a] relative overflow-hidden">
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="serif italic text-[180px] sm:text-[240px] text-[#E05A1A]/20 leading-none">KC</div>
-                </div>
-                <div className="absolute top-6 left-6 right-6 flex items-center justify-between">
-                  <span className="text-[10px] font-bold tracking-[0.2em] uppercase text-white/60">Convener</span>
-                  <div className="w-8 h-8 bg-[#E05A1A]"></div>
-                </div>
-                <div className="absolute bottom-6 left-6 right-6 text-white">
-                  <div className="text-2xl sm:text-3xl font-bold tracking-tight">Sir K.C Onyekachi</div>
-                  <div className="text-sm text-white/60 mt-1">Sir Khaycee</div>
-                </div>
+              <div className="aspect-[4/5] relative overflow-hidden">
+                <img src="sir-kc.jpg" alt="Sir K.C Onyekachi, Convener of The Finance Cycle Network" className="w-full h-full object-cover object-top"/>
               </div>
             </div>
             <div className="lg:col-span-7 scroll-reveal">
@@ -720,7 +710,7 @@ function App() {
           <p className="text-sm sm:text-base text-[#0A0A0A]/60 leading-relaxed mb-12 max-w-2xl mx-auto">
             This is more than sponsorship. It's <strong className="text-[#0A0A0A] font-semibold">partnership for lasting impact</strong>, where your presence aligns you with the operators building Africa's financial future.
           </p>
-          <a href="mailto:partners@tfcn.network" className="inline-flex items-center gap-2 bg-[#0A0A0A] text-white px-8 py-4 text-sm font-semibold rounded-full hover:bg-[#E05A1A] transition-all duration-300">
+          <a href="mailto:partners@thefinancecyclenetwork.com" className="inline-flex items-center gap-2 bg-[#0A0A0A] text-white px-8 py-4 text-sm font-semibold rounded-full hover:bg-[#E05A1A] transition-all duration-300">
             Request Sponsorship Deck <Icon name="arrow" size={14}/>
           </a>
         </div>
