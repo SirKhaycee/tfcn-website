@@ -116,6 +116,8 @@
 <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
 <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
 <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
 <style>
   * { -webkit-font-smoothing: antialiased; box-sizing: border-box; }
@@ -159,9 +161,29 @@
   .faq-content { max-height: 0; overflow: hidden; transition: max-height 0.5s cubic-bezier(0.16, 1, 0.3, 1); }
   .faq-content.open { max-height: 600px; }
   html { scroll-behavior: smooth; }
+  /* ── Custom cursor ── */
+  #gsap-dot, #gsap-ring {
+    position: fixed; top: 0; left: 0; border-radius: 50%;
+    pointer-events: none; z-index: 99998;
+    transform: translate(-50%,-50%); will-change: transform;
+  }
+  #gsap-dot { width: 8px; height: 8px; background: #E05A1A; }
+  #gsap-ring { width: 30px; height: 30px; border: 1.5px solid #E05A1A; transition: width .2s, height .2s, background .2s; }
+  .tfcn-no-cursor, .tfcn-no-cursor *, .tfcn-no-cursor a, .tfcn-no-cursor button { cursor: none !important; }
+  /* ── VIP glow ── */
+  @keyframes vip-pulse { 0%{box-shadow:0 0 0 0 rgba(224,90,26,.7)} 70%{box-shadow:0 0 0 26px rgba(224,90,26,0)} 100%{box-shadow:0 0 0 0 rgba(224,90,26,0)} }
+  .vip-glow-once { animation: vip-pulse 1.2s ease-out forwards; }
+  /* ── Word-split ── */
+  .g-word { display: inline-block; will-change: transform, opacity; }
+  /* ── Orange draw line (appended sibling div) ── */
+  .gsap-ul { height: 1.5px; background: #E05A1A; transform-origin: left; transform: scaleX(0); }
+  /* ── Tilt shine ── */
+  .tilt-shine { position: absolute; inset: 0; pointer-events: none; z-index: 5; border-radius: inherit; }
 </style>
 </head>
 <body>
+<div id="gsap-dot"></div>
+<div id="gsap-ring"></div>
 <div id="root"></div>
 
 <script type="text/babel" data-presets="react">
@@ -194,23 +216,31 @@ function Icon({ name, size = 16, className = '', strokeWidth = 2 }) {
 
 function TiltCard({ children, className, style, ...props }) {
   const ref = useRef(null);
+  const isTouch = typeof window !== 'undefined' && 'ontouchstart' in window;
   const handleMove = (e) => {
+    if (isTouch) return;
     const el = ref.current;
     const rect = el.getBoundingClientRect();
     const x = (e.clientX - rect.left) / rect.width - 0.5;
     const y = (e.clientY - rect.top) / rect.height - 0.5;
-    el.style.transform = `perspective(900px) rotateX(${-y * 5}deg) rotateY(${x * 5}deg) translateY(-6px)`;
-    el.style.boxShadow = `${-x * 24}px ${-y * 24}px 48px rgba(0,0,0,0.1)`;
+    el.style.transform = `perspective(900px) rotateX(${-y * 8}deg) rotateY(${x * 8}deg) translateY(-6px)`;
+    el.style.boxShadow = `${-x * 28}px ${-y * 28}px 56px rgba(0,0,0,0.12)`;
     el.style.borderColor = '#E05A1A';
+    const shine = el.querySelector('.tilt-shine');
+    if (shine) shine.style.background = `radial-gradient(circle at ${(x+0.5)*100}% ${(y+0.5)*100}%, rgba(255,255,255,0.13) 0%, transparent 65%)`;
   };
   const handleLeave = (e) => {
+    if (isTouch) return;
     const el = e.currentTarget;
     el.style.transform = '';
     el.style.boxShadow = '';
     el.style.borderColor = '';
+    const shine = el.querySelector('.tilt-shine');
+    if (shine) shine.style.background = '';
   };
   return (
-    <div ref={ref} className={className} style={{ transition: 'transform 0.35s ease, box-shadow 0.35s ease, border-color 0.3s', ...style }} onMouseMove={handleMove} onMouseLeave={handleLeave} {...props}>
+    <div ref={ref} className={className} style={{ transition: 'transform 0.4s ease, box-shadow 0.4s ease, border-color 0.3s', position: 'relative', ...style }} onMouseMove={handleMove} onMouseLeave={handleLeave} {...props}>
+      <div className="tilt-shine"></div>
       {children}
     </div>
   );
@@ -297,7 +327,7 @@ function Countdown() {
   return (
     <div className="grid grid-cols-4 divide-x divide-white/10">
       {[{ l: 'Days', v: t.days }, { l: 'Hours', v: t.hours }, { l: 'Minutes', v: t.minutes }, { l: 'Seconds', v: t.seconds }].map((u, i) => (
-        <div key={i} className="text-center py-6 lg:py-10">
+        <div key={i} data-gsap="cd-cell" className="text-center py-6 lg:py-10">
           <div className="font-bold tracking-[-0.05em] text-white tabular-nums leading-none" style={{ fontSize: 'clamp(48px, 10vw, 140px)' }}>{String(u.v).padStart(2, '0')}</div>
           <div className="text-[9px] sm:text-[11px] font-bold tracking-[0.25em] uppercase text-[#E05A1A] mt-3">{u.l}</div>
         </div>
@@ -308,7 +338,7 @@ function Countdown() {
 
 function FAQItem({ q, a, open, onClick }) {
   return (
-    <div className="border-b border-[#0A0A0A]/10">
+    <div data-gsap="faq-item" className="border-b border-[#0A0A0A]/10">
       <button onClick={onClick} className="w-full py-6 flex justify-between items-start text-left gap-6 group">
         <span className="text-base sm:text-lg font-semibold text-[#0A0A0A] group-hover:text-[#E05A1A] transition-colors duration-300">{q}</span>
         <span className={`flex-shrink-0 w-8 h-8 border-2 border-[#0A0A0A] flex items-center justify-center transition-all duration-500 ${open ? 'bg-[#E05A1A] border-[#E05A1A] text-white rotate-180' : 'text-[#0A0A0A]'}`}>
@@ -358,7 +388,7 @@ function App() {
   return (
     <div className="min-h-screen bg-[#F5F2EE] text-[#0A0A0A] grain">
 
-      {!loaded && <Loader onComplete={() => setLoaded(true)} />}
+      {!loaded && <Loader onComplete={() => { setLoaded(true); window.tfcnLoaded = true; window.dispatchEvent(new CustomEvent('tfcn-loaded')); }} />}
       {menuOpen && <MobileMenu onClose={() => setMenuOpen(false)} />}
 
       {/* NAV */}
@@ -386,8 +416,8 @@ function App() {
       </nav>
 
       {/* HERO */}
-      <section className="relative pt-28 lg:pt-40 pb-16 px-5 lg:px-10 min-h-screen flex items-center overflow-hidden">
-        <div className="absolute inset-0 opacity-[0.04]" style={{ backgroundImage: 'linear-gradient(#0A0A0A 1px, transparent 1px), linear-gradient(90deg, #0A0A0A 1px, transparent 1px)', backgroundSize: '60px 60px' }}/>
+      <section id="hero-section" className="relative pt-28 lg:pt-40 pb-16 px-5 lg:px-10 min-h-screen flex items-center overflow-hidden">
+        <div id="hero-bg-grid" className="absolute inset-0 opacity-[0.04]" style={{ backgroundImage: 'linear-gradient(#0A0A0A 1px, transparent 1px), linear-gradient(90deg, #0A0A0A 1px, transparent 1px)', backgroundSize: '60px 60px' }}/>
         <div className="absolute top-1/4 right-6 lg:right-32 w-20 h-20 lg:w-40 lg:h-40 bg-[#E05A1A] opacity-90 animate-float"></div>
         <div className="absolute bottom-20 right-10 hidden lg:block pointer-events-none">
           <div className="serif text-[200px] leading-none text-[#0A0A0A]/[0.04] italic">III</div>
@@ -395,22 +425,20 @@ function App() {
 
         <div className="relative max-w-7xl mx-auto w-full">
 
-
           {/* Main headline */}
-          <h1 className="animate-fadeUp delay-100 font-bold tracking-[-0.05em] leading-[0.88] text-[#0A0A0A] mb-8 max-w-5xl">
-            <div style={{ fontSize: 'clamp(48px, 9vw, 110px)' }}>Africa's most</div>
-            <div style={{ fontSize: 'clamp(48px, 9vw, 110px)' }} className="serif italic font-normal text-[#E05A1A] -mt-1 lg:-mt-2">curated</div>
-            <div style={{ fontSize: 'clamp(48px, 9vw, 110px)' }} className="-mt-1 lg:-mt-2">finance gathering.</div>
+          <h1 id="hero-h1" className="font-bold tracking-[-0.05em] leading-[0.88] text-[#0A0A0A] mb-8 max-w-5xl" style={{ opacity: 0 }}>
+            <div data-gsap="hl1" style={{ fontSize: 'clamp(48px, 9vw, 110px)' }}>Africa's most</div>
+            <div data-gsap="hl2" style={{ fontSize: 'clamp(48px, 9vw, 110px)' }} className="serif italic font-normal text-[#E05A1A] -mt-1 lg:-mt-2">curated</div>
+            <div data-gsap="hl3" style={{ fontSize: 'clamp(48px, 9vw, 110px)' }} className="-mt-1 lg:-mt-2">finance gathering.</div>
           </h1>
 
-
           {/* Sub copy */}
-          <div className="animate-fadeUp delay-300 max-w-xl mb-10">
+          <div id="hero-sub" className="max-w-xl mb-10" style={{ opacity: 0 }}>
             <p className="text-base sm:text-lg text-[#0A0A0A]/75 leading-relaxed font-medium">Seats are limited and filling fast.</p>
           </div>
 
           {/* CTA */}
-          <div className="animate-fadeUp delay-300">
+          <div id="hero-cta-wrap" style={{ opacity: 0 }}>
             <a href="#tickets" className="magnetic-btn inline-flex items-center gap-2 bg-[#0A0A0A] text-white px-8 py-4 text-sm font-semibold hover:bg-[#E05A1A] transition-all duration-300">
               Secure Your Seat <Icon name="arrow" size={14}/>
             </a>
@@ -419,10 +447,10 @@ function App() {
       </section>
 
       {/* COUNTDOWN */}
-      <section className="py-16 lg:py-20 px-5 lg:px-10 bg-[#0A0A0A] text-white">
+      <section id="countdown-section" className="py-16 lg:py-20 px-5 lg:px-10 bg-[#0A0A0A] text-white">
         <div className="max-w-7xl mx-auto scroll-reveal">
           <Countdown/>
-          <p className="text-center text-white/30 text-xs font-bold tracking-[0.3em] uppercase mt-8">July 23, 2026 &nbsp;·&nbsp; Lagos, Nigeria</p>
+          <p id="cd-date" className="text-center text-white/30 text-xs font-bold tracking-[0.3em] uppercase mt-8">July 23, 2026 &nbsp;·&nbsp; Lagos, Nigeria</p>
         </div>
       </section>
 
@@ -431,19 +459,23 @@ function App() {
         <div className="max-w-7xl mx-auto">
           <div className="grid lg:grid-cols-12 gap-10 lg:gap-16 items-center">
             <div className="lg:col-span-7 scroll-reveal">
-              <div className="flex items-center gap-2 mb-6"><div className="w-8 h-px bg-[#E05A1A]"></div><span className="text-[10px] sm:text-xs font-bold tracking-[0.25em] uppercase text-[#E05A1A]">About TFCN</span></div>
-              <h2 className="text-4xl sm:text-5xl lg:text-7xl font-bold tracking-[-0.04em] leading-[0.95] mb-8">One room.<br/><span className="serif italic font-normal text-[#E05A1A]">One theme.</span><br/>Zero noise.</h2>
+              <div className="flex items-center gap-2 mb-6"><div className="w-8 h-px bg-[#E05A1A]"></div><span data-gsap="about-label" className="text-[10px] sm:text-xs font-bold tracking-[0.25em] uppercase text-[#E05A1A]">About TFCN</span></div>
+              <h2 className="text-4xl sm:text-5xl lg:text-7xl font-bold tracking-[-0.04em] leading-[0.95] mb-8">
+                <span data-gsap="about-line1">One room.</span><br/>
+                <span data-gsap="about-line2" className="serif italic font-normal text-[#E05A1A]">One theme.</span><br/>
+                <span data-gsap="about-line3">Zero noise.</span>
+              </h2>
               <div className="space-y-5 text-base sm:text-lg leading-[1.7] text-[#0A0A0A]/75">
-                <p><strong className="text-[#0A0A0A] font-semibold">The Finance Cycle Network (TFCN)</strong> is an annual gathering of Africa's sharpest financial minds: operators, capital allocators, and visionaries who refuse to participate in the madness of consensus.</p>
-                <p>Every year, we explore a new theme that cuts to the core of what it means to build and sustain wealth in a world of endless noise.</p>
-                <p className="text-[#0A0A0A]/60">No fluff. No motivational theatre. Just the patterns of those who have seen empires rise, markets fall, and wealth quietly compound through cycles.</p>
+                <p data-gsap="about-para"><strong className="text-[#0A0A0A] font-semibold">The Finance Cycle Network (TFCN)</strong> is an annual gathering of Africa's sharpest financial minds: operators, capital allocators, and visionaries who refuse to participate in the madness of consensus.</p>
+                <p data-gsap="about-para">Every year, we explore a new theme that cuts to the core of what it means to build and sustain wealth in a world of endless noise.</p>
+                <p data-gsap="about-para" className="text-[#0A0A0A]/60">No fluff. No motivational theatre. Just the patterns of those who have seen empires rise, markets fall, and wealth quietly compound through cycles.</p>
               </div>
-              <a href="#tickets" className="mt-10 inline-flex items-center gap-2 bg-[#0A0A0A] text-white px-7 py-4 text-sm font-semibold rounded-full hover:bg-[#E05A1A] transition-all duration-300">
+              <a data-gsap="about-cta" href="#tickets" className="mt-10 inline-flex items-center gap-2 bg-[#0A0A0A] text-white px-7 py-4 text-sm font-semibold rounded-full hover:bg-[#E05A1A] transition-all duration-300">
                 Register for 2026 <Icon name="arrow" size={14}/>
               </a>
             </div>
             <div className="lg:col-span-5 scroll-reveal flex justify-center lg:justify-end">
-              <div className="relative" style={{ transform: 'rotate(2deg)', maxWidth: '340px', width: '100%' }}>
+              <div id="flyer-wrapper" className="relative" style={{ transform: 'rotate(2deg)', maxWidth: '340px', width: '100%' }}>
                 <div className="absolute inset-0 translate-x-3 translate-y-3 bg-[#E05A1A]/20 rounded-sm"></div>
                 <img src="event-flyer.jpg" alt="TFCN 2026 The Old Taker Event Flyer" className="relative w-full rounded-sm shadow-2xl"/>
               </div>
@@ -453,34 +485,34 @@ function App() {
       </section>
 
       {/* THEME */}
-      <section className="py-20 lg:py-32 px-5 lg:px-10 bg-[#0A0A0A] text-white relative overflow-hidden">
-        <div className="absolute top-10 right-5 opacity-10 pointer-events-none"><div className="serif italic text-[200px] sm:text-[400px] leading-none">III</div></div>
+      <section id="theme-section" className="py-20 lg:py-32 px-5 lg:px-10 bg-[#0A0A0A] text-white relative overflow-hidden">
+        <div id="theme-iii" className="absolute top-10 right-5 opacity-10 pointer-events-none"><div className="serif italic text-[200px] sm:text-[400px] leading-none">III</div></div>
         <div className="absolute top-1/2 left-10 w-32 h-32 bg-[#E05A1A] -translate-y-1/2 opacity-90 hidden lg:block"></div>
         <div className="max-w-7xl mx-auto relative">
           <div className="grid lg:grid-cols-12 gap-12">
             <div className="lg:col-span-10 lg:col-start-2 scroll-reveal">
-              <div className="flex items-center gap-2 mb-6"><div className="w-8 h-px bg-[#E05A1A]"></div><span className="text-[10px] sm:text-xs font-bold tracking-[0.25em] uppercase text-[#E05A1A]">2026 Theme</span></div>
+              <div className="flex items-center gap-2 mb-6"><div className="w-8 h-px bg-[#E05A1A]"></div><span data-gsap="theme-label" className="text-[10px] sm:text-xs font-bold tracking-[0.25em] uppercase text-[#E05A1A]">2026 Theme</span></div>
               <h2 className="font-bold tracking-[-0.04em] leading-[0.9] mb-10">
-                <div className="text-4xl sm:text-5xl lg:text-7xl mb-3">Don't Become</div>
-                <div className="text-5xl sm:text-6xl lg:text-8xl serif italic font-normal text-[#E05A1A]">"The Old Taker"</div>
+                <div data-gsap="theme-line1" className="text-4xl sm:text-5xl lg:text-7xl mb-3">Don't Become</div>
+                <div data-gsap="theme-line2" className="text-5xl sm:text-6xl lg:text-8xl serif italic font-normal text-[#E05A1A]">"The Old Taker"</div>
               </h2>
               <div className="space-y-6 text-base sm:text-lg lg:text-xl leading-relaxed text-white/75 max-w-4xl">
-                <p className="text-white/90 text-xl lg:text-2xl font-semibold">You know the type.</p>
-                <p>The person who says <em className="text-[#E05A1A] font-semibold">"I used to own three properties."</em> The founder who <em className="text-[#E05A1A] font-semibold">"used to run a seven-figure business."</em> The trader who <em className="text-[#E05A1A] font-semibold">"used to clear six figures monthly."</em></p>
-                <p className="text-white font-semibold text-lg lg:text-xl">The Old Taker had it all. Then lost it.</p>
-                <p>Some of you are scared of becoming one. Some are already on the edge. <strong className="text-white">TFCN 2026 explores the patterns that separate those who compound wealth across cycles from those who reset to zero every few years.</strong></p>
-                
+                <p data-gsap="theme-intro" className="text-white/90 text-xl lg:text-2xl font-semibold">You know the type.</p>
+                <p data-gsap="theme-quote">The person who says <em className="text-[#E05A1A] font-semibold">"I used to own three properties."</em> The founder who <em className="text-[#E05A1A] font-semibold">"used to run a seven-figure business."</em> The trader who <em className="text-[#E05A1A] font-semibold">"used to clear six figures monthly."</em></p>
+                <p data-gsap="theme-lost" className="text-white font-semibold text-lg lg:text-xl">The Old Taker had it all. Then lost it.</p>
+                <p data-gsap="theme-quote">Some of you are scared of becoming one. Some are already on the edge. <strong className="text-white">TFCN 2026 explores the patterns that separate those who compound wealth across cycles from those who reset to zero every few years.</strong></p>
+
                 <div className="bg-white/5 border-l-4 border-[#E05A1A] p-6 lg:p-8 mt-10">
                   <p className="text-white font-bold text-lg mb-4">We're covering:</p>
                   <ul className="space-y-3 text-white/70">
-                    <li className="flex items-start gap-3"><span className="text-[#E05A1A] text-xl flex-shrink-0">•</span><span>How to stay relevant when your industry shifts overnight</span></li>
-                    <li className="flex items-start gap-3"><span className="text-[#E05A1A] text-xl flex-shrink-0">•</span><span>Strategies to avoid going back to zero</span></li>
-                    <li className="flex items-start gap-3"><span className="text-[#E05A1A] text-xl flex-shrink-0">•</span><span>Real stories from people who clawed back (and those who didn't)</span></li>
-                    <li className="flex items-start gap-3"><span className="text-[#E05A1A] text-xl flex-shrink-0">•</span><span>Building systems that survive market collapses, pivots, and personal crises</span></li>
+                    <li data-gsap="theme-bullet" className="flex items-start gap-3"><span className="text-[#E05A1A] text-xl flex-shrink-0">•</span><span>How to stay relevant when your industry shifts overnight</span></li>
+                    <li data-gsap="theme-bullet" className="flex items-start gap-3"><span className="text-[#E05A1A] text-xl flex-shrink-0">•</span><span>Strategies to avoid going back to zero</span></li>
+                    <li data-gsap="theme-bullet" className="flex items-start gap-3"><span className="text-[#E05A1A] text-xl flex-shrink-0">•</span><span>Real stories from people who clawed back (and those who didn't)</span></li>
+                    <li data-gsap="theme-bullet" className="flex items-start gap-3"><span className="text-[#E05A1A] text-xl flex-shrink-0">•</span><span>Building systems that survive market collapses, pivots, and personal crises</span></li>
                   </ul>
                 </div>
 
-                <p className="text-white/60 mt-8">This conversation cuts across Web3, banking, tradfi, tech. <strong className="text-white">if you've ever had money and fear losing it, this room is for you.</strong></p>
+                <p data-gsap="theme-quote" className="text-white/60 mt-8">This conversation cuts across Web3, banking, tradfi, tech. <strong className="text-white">if you've ever had money and fear losing it, this room is for you.</strong></p>
               </div>
             </div>
           </div>
@@ -492,23 +524,23 @@ function App() {
         <div className="max-w-7xl mx-auto">
           <div className="grid lg:grid-cols-12 gap-10 lg:gap-16 items-center">
             <div className="lg:col-span-5 scroll-reveal">
-              <div className="aspect-[4/5] relative overflow-hidden">
+              <div id="convener-photo" className="aspect-[4/5] relative overflow-hidden">
                 <img src="sir-kc.jpg" alt="Sir K.C Onyekachi, Convener of The Finance Cycle Network" className="w-full h-full object-cover object-top"/>
               </div>
             </div>
             <div className="lg:col-span-7 scroll-reveal">
-              <div className="flex items-center gap-2 mb-6"><div className="w-8 h-px bg-[#E05A1A]"></div><span className="text-[10px] sm:text-xs font-bold tracking-[0.25em] uppercase text-[#E05A1A]">The Convener</span></div>
-              <h2 className="text-3xl sm:text-4xl lg:text-6xl font-bold tracking-[-0.04em] leading-[0.95] mb-8">
+              <div className="flex items-center gap-2 mb-6"><div className="w-8 h-px bg-[#E05A1A]"></div><span data-gsap="convener-label" className="text-[10px] sm:text-xs font-bold tracking-[0.25em] uppercase text-[#E05A1A]">The Convener</span></div>
+              <h2 id="convener-h2" className="text-3xl sm:text-4xl lg:text-6xl font-bold tracking-[-0.04em] leading-[0.95] mb-8">
                 Hosted by<br/><span className="serif italic font-normal text-[#E05A1A]">Sir K.C Onyekachi.</span>
               </h2>
               <div className="space-y-4 text-base sm:text-lg leading-relaxed text-[#0A0A0A]/75">
-                <p>Sir Khaycee is a Web3 growth strategist, ecosystem builder, educator, and founder of <strong className="text-[#0A0A0A] font-semibold">Rebirth Odyssey</strong>, one of the fastest-growing youth-focused Web3 onboarding ecosystems in Africa.</p>
-                <p>Through his systems and community, thousands of young Africans have been introduced to digital opportunities, with students collectively generating <span className="text-[#E05A1A] font-semibold">over $2 million through Web3</span>.</p>
-                <p className="text-[#0A0A0A]/60">He is passionate about finance, digital empowerment, and helping young people build sustainable wealth in the modern internet economy.</p>
+                <p data-gsap="bio-para">Sir Khaycee is a Web3 growth strategist, ecosystem builder, educator, and founder of <strong className="text-[#0A0A0A] font-semibold">Rebirth Odyssey</strong>, one of the fastest-growing youth-focused Web3 onboarding ecosystems in Africa.</p>
+                <p data-gsap="bio-para">Through his systems and community, thousands of young Africans have been introduced to digital opportunities, with students collectively generating <span className="text-[#E05A1A] font-semibold">over $2 million through Web3</span>.</p>
+                <p data-gsap="bio-para" className="text-[#0A0A0A]/60">He is passionate about finance, digital empowerment, and helping young people build sustainable wealth in the modern internet economy.</p>
               </div>
               <div className="grid grid-cols-2 gap-px bg-[#0A0A0A]/10 border border-[#0A0A0A]/10 mt-10 max-w-md">
-                <div className="bg-white p-5"><div className="text-2xl sm:text-3xl font-bold tracking-tight">$2M+</div><div className="text-[10px] font-bold tracking-[0.15em] uppercase text-[#0A0A0A]/50 mt-1">Generated by students</div></div>
-                <div className="bg-white p-5"><div className="text-2xl sm:text-3xl font-bold tracking-tight">1000s</div><div className="text-[10px] font-bold tracking-[0.15em] uppercase text-[#0A0A0A]/50 mt-1">Lives impacted</div></div>
+                <div className="bg-white p-5"><div id="stat-2m" className="text-2xl sm:text-3xl font-bold tracking-tight">$2M+</div><div className="text-[10px] font-bold tracking-[0.15em] uppercase text-[#0A0A0A]/50 mt-1">Generated by students</div></div>
+                <div className="bg-white p-5"><div id="stat-1000s" className="text-2xl sm:text-3xl font-bold tracking-tight">1000s</div><div className="text-[10px] font-bold tracking-[0.15em] uppercase text-[#0A0A0A]/50 mt-1">Lives impacted</div></div>
               </div>
             </div>
           </div>
@@ -520,7 +552,7 @@ function App() {
         <div className="max-w-7xl mx-auto">
           <div className="scroll-reveal mb-16">
             <div className="flex items-center gap-2 mb-6"><div className="w-8 h-px bg-[#E05A1A]"></div><span className="text-[10px] sm:text-xs font-bold tracking-[0.25em] uppercase text-[#E05A1A]">What to Expect</span></div>
-            <h2 className="text-4xl sm:text-5xl lg:text-7xl font-bold tracking-[-0.04em] leading-[0.95] max-w-4xl">A day built for<br/><span className="serif italic font-normal text-[#E05A1A]">operators only.</span></h2>
+            <h2 id="expect-h2" className="text-4xl sm:text-5xl lg:text-7xl font-bold tracking-[-0.04em] leading-[0.95] max-w-4xl">A day built for<br/><span className="serif italic font-normal text-[#E05A1A]">operators only.</span></h2>
           </div>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-px bg-[#0A0A0A]/10 border border-[#0A0A0A]/10 scroll-reveal">
             {[
@@ -531,7 +563,7 @@ function App() {
               { icon: 'target', title: 'Private Lounge Access', desc: 'Premium attendees get direct access to the speakers, special guests, and host in our exclusive private lounge.' },
               { icon: 'play', title: 'Lifetime Replays', desc: 'Premium ticket holders receive full HD recordings of every session. Rewatch, share with your team, build your archive.' },
             ].map((item, i) => (
-              <TiltCard key={i} className="bg-white p-8 lg:p-10 group border border-transparent" style={{ cursor: 'default' }}>
+              <TiltCard key={i} data-gsap="feature-card" className="bg-white p-8 lg:p-10 group border border-transparent" style={{ cursor: 'default' }}>
                 <div className="w-12 h-12 bg-[#0A0A0A] text-[#E05A1A] flex items-center justify-center mb-6 group-hover:bg-[#E05A1A] group-hover:text-white transition-all duration-300">
                   <Icon name={item.icon} size={20} strokeWidth={2}/>
                 </div>
@@ -549,7 +581,7 @@ function App() {
           <div className="grid lg:grid-cols-12 gap-10 lg:gap-20 items-start">
             <div className="lg:col-span-5 scroll-reveal lg:sticky lg:top-32">
               <div className="flex items-center gap-2 mb-6"><div className="w-8 h-px bg-[#E05A1A]"></div><span className="text-[10px] sm:text-xs font-bold tracking-[0.25em] uppercase text-[#E05A1A]">Who Should Attend</span></div>
-              <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-[-0.04em] leading-[0.95] mb-6">Built for<br/><span className="serif italic font-normal text-[#E05A1A]">the serious.</span></h2>
+              <h2 id="attend-h2" className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-[-0.04em] leading-[0.95] mb-6">Built for<br/><span className="serif italic font-normal text-[#E05A1A]">the serious.</span></h2>
               <p className="text-base sm:text-lg text-[#0A0A0A]/65 leading-relaxed">If you're tired of motivational fluff and ready to be in the room with people who actually move money. This is your invitation.</p>
             </div>
             <div className="lg:col-span-7 scroll-reveal">
@@ -561,7 +593,7 @@ function App() {
                   { n: '04', title: 'High-Performance Creators', desc: 'Earning seriously online and ready to convert income into long-term wealth.' },
                   { n: '05', title: 'Ambitious Students & Graduates', desc: 'Hungry to understand how the financial world actually works, before everyone else does.' },
                 ].map((item, i) => (
-                  <div key={i} className="bg-white p-6 lg:p-8 hover-lift group transition-colors duration-300 hover:bg-[#FAFAF7]">
+                  <div key={i} data-gsap="attend-item" className="bg-white p-6 lg:p-8 hover-lift group transition-colors duration-300 hover:bg-[#FAFAF7]">
                     <div className="flex items-start gap-5 lg:gap-7">
                       <div className="text-2xl lg:text-3xl font-bold text-[#E05A1A] serif italic font-normal flex-shrink-0">{item.n}</div>
                       <div className="flex-1">
@@ -583,7 +615,7 @@ function App() {
           <div className="grid lg:grid-cols-12 gap-10 mb-16 items-end">
             <div className="lg:col-span-7 scroll-reveal">
               <div className="flex items-center gap-2 mb-6"><div className="w-8 h-px bg-[#E05A1A]"></div><span className="text-[10px] sm:text-xs font-bold tracking-[0.25em] uppercase text-[#E05A1A]">Access Tiers</span></div>
-              <h2 className="text-4xl sm:text-5xl lg:text-7xl font-bold tracking-[-0.04em] leading-[0.95]">Pick your<br/><span className="serif italic font-normal text-[#E05A1A]">way in.</span></h2>
+              <h2 id="tickets-h2" className="text-4xl sm:text-5xl lg:text-7xl font-bold tracking-[-0.04em] leading-[0.95]">Pick your<br/><span className="serif italic font-normal text-[#E05A1A]">way in.</span></h2>
             </div>
             <div className="lg:col-span-5 scroll-reveal">
               <p className="text-base sm:text-lg text-[#0A0A0A]/70 leading-relaxed">Three tiers. One room. Choose the level that fits where you are and where you are going.</p>
@@ -593,7 +625,7 @@ function App() {
           <div className="grid lg:grid-cols-3 gap-px bg-[#0A0A0A]/10 border border-[#0A0A0A]/10 scroll-reveal">
 
             {/* VIP TIER */}
-            <div className="bg-[#E05A1A] text-white p-8 lg:p-12 hover-lift relative transition-all duration-300 hover:brightness-105">
+            <div id="vip-card" data-gsap="ticket-card" className="bg-[#E05A1A] text-white p-8 lg:p-12 hover-lift relative transition-all duration-300 hover:brightness-105">
               <div className="absolute -top-px right-0 bg-[#0A0A0A] text-white text-[10px] font-bold tracking-[0.2em] uppercase px-3 py-1.5">Exclusive</div>
               <div className="mb-6 pb-6 border-b border-white/20 flex items-start justify-between gap-4">
                 <div>
@@ -628,7 +660,7 @@ function App() {
             </div>
 
             {/* PREMIUM TIER */}
-            <div className="bg-[#0A0A0A] text-white p-8 lg:p-12 hover-lift relative transition-colors duration-300 hover:bg-[#111]">
+            <div data-gsap="ticket-card" className="bg-[#0A0A0A] text-white p-8 lg:p-12 hover-lift relative transition-colors duration-300 hover:bg-[#111]">
               <div className="absolute -top-px right-0 bg-[#E05A1A] text-white text-[10px] font-bold tracking-[0.2em] uppercase px-3 py-1.5">Instant Access</div>
               <div className="mb-6 pb-6 border-b border-white/10 flex items-start justify-between gap-4">
                 <div>
@@ -664,7 +696,7 @@ function App() {
             </div>
 
             {/* FREE TIER */}
-            <div className="bg-white p-8 lg:p-12 hover-lift relative transition-colors duration-300 hover:bg-[#FAFAF7]">
+            <div data-gsap="ticket-card" className="bg-white p-8 lg:p-12 hover-lift relative transition-colors duration-300 hover:bg-[#FAFAF7]">
               <div className="mb-6 pb-6 border-b border-[#0A0A0A]/10 flex items-start justify-between gap-4">
                 <div>
                   <div className="text-xs font-bold tracking-[0.2em] uppercase text-[#E05A1A] mb-2">Free Tier</div>
@@ -697,16 +729,16 @@ function App() {
       <section className="py-20 lg:py-32 px-5 lg:px-10 bg-white">
         <div className="max-w-5xl mx-auto text-center scroll-reveal">
           <div className="inline-flex items-center gap-2 mb-6"><div className="w-8 h-px bg-[#E05A1A]"></div><span className="text-[10px] sm:text-xs font-bold tracking-[0.25em] uppercase text-[#E05A1A]">Partnership</span><div className="w-8 h-px bg-[#E05A1A]"></div></div>
-          <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-[-0.04em] leading-[0.95] mb-8">
+          <h2 id="sponsor-h2" className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-[-0.04em] leading-[0.95] mb-8">
             Partner with<br/><span className="serif italic font-normal text-[#E05A1A]">TFCN 2026.</span>
           </h2>
-          <p className="text-base sm:text-lg text-[#0A0A0A]/70 leading-relaxed mb-10 max-w-2xl mx-auto">
+          <p data-gsap="sponsor-para" className="text-base sm:text-lg text-[#0A0A0A]/70 leading-relaxed mb-10 max-w-2xl mx-auto">
             Every partnership tier is an invitation to shape how Africa's next generation of operators think about capital, cycles, and wealth.
           </p>
-          <p className="text-sm sm:text-base text-[#0A0A0A]/60 leading-relaxed mb-12 max-w-2xl mx-auto">
+          <p data-gsap="sponsor-para" className="text-sm sm:text-base text-[#0A0A0A]/60 leading-relaxed mb-12 max-w-2xl mx-auto">
             This is more than sponsorship. It's <strong className="text-[#0A0A0A] font-semibold">partnership for lasting impact</strong>, where your presence aligns you with the operators building Africa's financial future.
           </p>
-          <a href="mailto:hello@thefinancecyclenetwork.com" className="inline-flex items-center gap-2 bg-[#0A0A0A] text-white px-8 py-4 text-sm font-semibold rounded-full hover:bg-[#E05A1A] transition-all duration-300">
+          <a id="sponsor-cta" href="mailto:hello@thefinancecyclenetwork.com" className="inline-flex items-center gap-2 bg-[#0A0A0A] text-white px-8 py-4 text-sm font-semibold rounded-full hover:bg-[#E05A1A] transition-all duration-300">
             Request Sponsorship Deck <Icon name="arrow" size={14}/>
           </a>
         </div>
@@ -717,7 +749,7 @@ function App() {
         <div className="max-w-7xl mx-auto">
           <div className="scroll-reveal mb-14">
             <div className="flex items-center gap-2 mb-6"><div className="w-8 h-px bg-[#E05A1A]"></div><span className="text-[10px] sm:text-xs font-bold tracking-[0.25em] uppercase text-[#E05A1A]">From the Desk</span></div>
-            <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-[-0.04em] leading-[0.95] max-w-2xl">Read what's shaping<br/><span className="serif italic font-normal text-[#E05A1A]">the conversation.</span></h2>
+            <h2 id="blog-h2" className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-[-0.04em] leading-[0.95] max-w-2xl">Read what's shaping<br/><span className="serif italic font-normal text-[#E05A1A]">the conversation.</span></h2>
           </div>
           <div className="grid md:grid-cols-3 gap-6 scroll-reveal">
             {[
@@ -725,7 +757,7 @@ function App() {
               { title: 'The Old Taker: Understanding the 2026 Theme', tag: '2026 Theme', bg: '#E05A1A', stripe: 'rgba(0,0,0,0.13)', textCol: '#ffffff', slug: 'blog-old-taker.html' },
               { title: 'Behind TFCN: The Vision of Sir K.C Onyekachi', tag: 'Convener', bg: '#F0EDE8', stripe: 'rgba(224,90,26,0.13)', textCol: '#0A0A0A', slug: 'blog-behind-tfcn.html' },
             ].map((post, i) => (
-              <TiltCard key={i} className="group cursor-pointer" style={{ borderRadius: '16px' }}>
+              <TiltCard key={i} data-gsap="blog-card" className="group cursor-pointer" style={{ borderRadius: '16px' }}>
                 <a href={post.slug} className="block">
                   <div className="relative rounded-2xl overflow-hidden mb-5" style={{ aspectRatio: '4/3', background: post.bg, backgroundImage: `repeating-linear-gradient(-48deg, transparent, transparent 22px, ${post.stripe} 22px, ${post.stripe} 44px)` }}>
                     <div className="absolute inset-0 p-6 flex flex-col justify-between">
@@ -755,7 +787,7 @@ function App() {
         <div className="max-w-5xl mx-auto">
           <div className="scroll-reveal mb-12 lg:mb-16">
             <div className="flex items-center gap-2 mb-6"><div className="w-8 h-px bg-[#E05A1A]"></div><span className="text-[10px] sm:text-xs font-bold tracking-[0.25em] uppercase text-[#E05A1A]">Common Questions</span></div>
-            <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-[-0.04em] leading-[0.95]">
+            <h2 id="faq-h2" className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-[-0.04em] leading-[0.95]">
               Frequently asked<br/><span className="serif italic font-normal text-[#E05A1A]">questions.</span>
             </h2>
           </div>
@@ -768,14 +800,14 @@ function App() {
       </section>
 
       {/* CLOSING */}
-      <section className="py-24 lg:py-32 px-5 lg:px-10 bg-[#0A0A0A] text-white text-center relative overflow-hidden">
-        <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: 'linear-gradient(#fff 1px, transparent 1px), linear-gradient(90deg, #fff 1px, transparent 1px)', backgroundSize: '60px 60px' }}/>
-        <div className="max-w-5xl mx-auto relative scroll-reveal">
-          <p className="serif italic text-2xl sm:text-4xl lg:text-6xl leading-tight text-white/90 mb-12">
+      <section id="closing-section" className="py-24 lg:py-32 px-5 lg:px-10 bg-[#0A0A0A] text-white text-center relative overflow-hidden">
+        <div id="closing-bg-grid" className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: 'linear-gradient(#fff 1px, transparent 1px), linear-gradient(90deg, #fff 1px, transparent 1px)', backgroundSize: '60px 60px' }}/>
+        <div className="max-w-5xl mx-auto relative">
+          <p id="closing-quote" className="serif italic text-2xl sm:text-4xl lg:text-6xl leading-tight text-white/90 mb-12">
             "Don't become the person<br/>who says <span className="text-[#E05A1A]">'I used to have...'</span>"
           </p>
           <p className="text-base sm:text-lg text-white/60 mb-12 max-w-2xl mx-auto">TFCN 2026 · The Old Taker · 23 July · Lagos</p>
-          <a href="#tickets" className="inline-flex items-center gap-2 bg-[#E05A1A] text-white px-8 py-5 text-sm font-bold tracking-[0.1em] uppercase rounded-full hover:bg-white hover:text-[#0A0A0A] transition-all duration-300">
+          <a id="closing-cta" href="#tickets" className="inline-flex items-center gap-2 bg-[#E05A1A] text-white px-8 py-5 text-sm font-bold tracking-[0.1em] uppercase rounded-full hover:bg-white hover:text-[#0A0A0A] transition-all duration-300">
             Secure Your Seat <Icon name="arrow" size={14}/>
           </a>
         </div>
@@ -826,6 +858,519 @@ function App() {
 }
 
 ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+</script>
+
+<script>
+(function () {
+  'use strict';
+
+  /* ─────────────────────────────────────────
+     WAIT FOR GSAP + REACT RENDER
+  ───────────────────────────────────────── */
+  function waitForGSAP(cb) {
+    if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
+      requestAnimationFrame(function () { requestAnimationFrame(cb); });
+    } else {
+      setTimeout(function () { waitForGSAP(cb); }, 40);
+    }
+  }
+
+  waitForGSAP(function () {
+    gsap.registerPlugin(ScrollTrigger);
+
+    var noMotion  = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var isTouch   = 'ontouchstart' in window;
+    var isMobile  = function () { return window.innerWidth <= 768; };
+    var d         = function (v) { return isMobile() ? v * 0.5 : v; };
+
+    /* ─────────────────────────────────────
+       CUSTOM CURSOR  (desktop / non-touch)
+    ───────────────────────────────────── */
+    if (!isTouch) {
+      document.body.classList.add('tfcn-no-cursor');
+      var dot  = document.getElementById('gsap-dot');
+      var ring = document.getElementById('gsap-ring');
+      var mx = -200, my = -200, rx = -200, ry = -200;
+
+      document.addEventListener('mousemove', function (e) {
+        mx = e.clientX; my = e.clientY;
+        gsap.set(dot, { x: mx, y: my });
+      });
+
+      gsap.ticker.add(function () {
+        rx += (mx - rx) * 0.08;
+        ry += (my - ry) * 0.08;
+        gsap.set(ring, { x: rx, y: ry });
+      });
+
+      function attachCursorHover(els) {
+        els.forEach(function (el) {
+          el.addEventListener('mouseenter', function () {
+            gsap.to(ring, { width: 44, height: 44, background: 'rgba(224,90,26,0.15)', duration: 0.2 });
+            gsap.to(dot,  { opacity: 0, duration: 0.1 });
+          });
+          el.addEventListener('mouseleave', function () {
+            gsap.to(ring, { width: 30, height: 30, background: 'transparent', duration: 0.2 });
+            gsap.to(dot,  { opacity: 1, duration: 0.1 });
+          });
+        });
+      }
+
+      attachCursorHover([].slice.call(document.querySelectorAll('a, button')));
+
+      /* Re-attach after React re-renders (MutationObserver) */
+      var mo = new MutationObserver(function () {
+        attachCursorHover([].slice.call(document.querySelectorAll('a[data-cursor-bound!="1"], button[data-cursor-bound!="1"]')));
+        document.querySelectorAll('a, button').forEach(function (el) { el.setAttribute('data-cursor-bound', '1'); });
+      });
+      mo.observe(document.getElementById('root'), { childList: true, subtree: true });
+    }
+
+    if (noMotion) return;
+
+    /* ─────────────────────────────────────
+       WORD-SPLIT HELPER
+    ───────────────────────────────────── */
+    function splitWords(el) {
+      if (!el) return [];
+      var words = [];
+      function walk(node) {
+        if (node.nodeType === 3) {
+          var parts = node.textContent.split(/(\s+)/);
+          var frag  = document.createDocumentFragment();
+          parts.forEach(function (p) {
+            if (/^\s+$/.test(p)) {
+              frag.appendChild(document.createTextNode(p));
+            } else if (p.length) {
+              var sp = document.createElement('span');
+              sp.className = 'g-word';
+              sp.textContent = p;
+              words.push(sp);
+              frag.appendChild(sp);
+            }
+          });
+          node.parentNode.replaceChild(frag, node);
+        } else if (node.nodeType === 1) {
+          [].slice.call(node.childNodes).forEach(walk);
+        }
+      }
+      [].slice.call(el.childNodes).forEach(walk);
+      return words;
+    }
+
+    /* ─────────────────────────────────────
+       ORANGE UNDERLINE DRAW
+    ───────────────────────────────────── */
+    function drawUnderline(el) {
+      if (!el) return;
+      var line = document.createElement('div');
+      line.className = 'gsap-ul';
+      el.parentNode.insertBefore(line, el.nextSibling);
+      ScrollTrigger.create({
+        trigger: el, start: 'top 88%', once: true,
+        onEnter: function () {
+          gsap.fromTo(line, { scaleX: 0 }, { scaleX: 1, duration: 0.5, ease: 'power2.inOut' });
+        }
+      });
+    }
+
+    /* ─────────────────────────────────────
+       SECTION 1 — HERO  (fires after loader)
+    ───────────────────────────────────── */
+    function initHero() {
+      var h1    = document.getElementById('hero-h1');
+      var sub   = document.getElementById('hero-sub');
+      var cta   = document.getElementById('hero-cta-wrap');
+      var bgGrid = document.getElementById('hero-bg-grid');
+
+      if (h1) {
+        gsap.set(h1, { opacity: 1 });
+        var lines = h1.querySelectorAll('[data-gsap^="hl"]');
+        gsap.from(lines, { y: d(50), opacity: 0, duration: 0.8, stagger: 0.15, ease: 'power3.out' });
+      }
+      if (sub) gsap.fromTo(sub, { opacity: 0, y: d(20) }, { opacity: 1, y: 0, duration: 0.6, ease: 'power3.out', delay: 0.6 });
+      if (cta) gsap.fromTo(cta, { opacity: 0, y: d(20) }, { opacity: 1, y: 0, duration: 0.6, ease: 'power3.out', delay: 0.75 });
+      if (bgGrid) gsap.from(bgGrid, { scale: 1.06, duration: 8, ease: 'none', transformOrigin: 'center center' });
+    }
+
+    if (window.tfcnLoaded) {
+      initHero();
+    } else {
+      window.addEventListener('tfcn-loaded', initHero, { once: true });
+    }
+
+    /* ─────────────────────────────────────
+       SECTION 2 — COUNTDOWN
+    ───────────────────────────────────── */
+    var cdCells = document.querySelectorAll('[data-gsap="cd-cell"]');
+    if (cdCells.length) {
+      gsap.from(cdCells, {
+        y: d(30), opacity: 0, duration: 0.7, stagger: 0.1, ease: 'power3.out',
+        scrollTrigger: { trigger: '#countdown-section', start: 'top 88%', once: true }
+      });
+    }
+    var cdDate = document.getElementById('cd-date');
+    if (cdDate) {
+      gsap.from(cdDate, {
+        opacity: 0, duration: 0.6, ease: 'power2.out', delay: 0.5,
+        scrollTrigger: { trigger: '#countdown-section', start: 'top 88%', once: true }
+      });
+    }
+
+    /* ─────────────────────────────────────
+       SECTION 3 — ABOUT
+    ───────────────────────────────────── */
+    drawUnderline(document.querySelector('[data-gsap="about-label"]'));
+
+    var aL1 = document.querySelector('[data-gsap="about-line1"]');
+    var aL2 = document.querySelector('[data-gsap="about-line2"]');
+    var aL3 = document.querySelector('[data-gsap="about-line3"]');
+    if (aL1) {
+      var aTl = gsap.timeline({ scrollTrigger: { trigger: aL1, start: 'top 88%', once: true } });
+      aTl.from(aL1, { x: d(-60), opacity: 0, duration: 0.65, ease: 'power3.out' })
+         .from(aL2, { y: d(40),  opacity: 0, duration: 0.65, ease: 'power3.out' }, '-=0.53')
+         .from(aL3, { y: d(-30), opacity: 0, duration: 0.5,  ease: 'power3.out' }, '-=0.53');
+    }
+
+    var aParas = document.querySelectorAll('[data-gsap="about-para"]');
+    if (aParas.length) {
+      gsap.from(aParas, {
+        y: d(25), opacity: 0, duration: 0.7, stagger: 0.18, ease: 'power2.out',
+        scrollTrigger: { trigger: aParas[0], start: 'top 88%', once: true }
+      });
+    }
+
+    var aCta = document.querySelector('[data-gsap="about-cta"]');
+    if (aCta) {
+      gsap.from(aCta, {
+        opacity: 0, y: d(15), duration: 0.6, ease: 'power2.out',
+        scrollTrigger: { trigger: aCta, start: 'top 88%', once: true }
+      });
+    }
+
+    var flyerWrap = document.getElementById('flyer-wrapper');
+    if (flyerWrap) {
+      gsap.from(flyerWrap, {
+        scale: 0.93, y: d(30), opacity: 0, duration: 1, ease: 'power2.out',
+        scrollTrigger: { trigger: flyerWrap, start: 'top 88%', once: true }
+      });
+      gsap.to(flyerWrap, {
+        y: d(-70), ease: 'none',
+        scrollTrigger: { trigger: '#about', start: 'top bottom', end: 'bottom top', scrub: true }
+      });
+    }
+
+    /* ─────────────────────────────────────
+       SECTION 4 — THEME
+    ───────────────────────────────────── */
+    var themeIII = document.getElementById('theme-iii');
+    if (themeIII) {
+      gsap.from(themeIII, {
+        scale: 0, opacity: 0, duration: 0.4, ease: 'power2.out',
+        scrollTrigger: { trigger: themeIII, start: 'top 88%', once: true }
+      });
+    }
+
+    drawUnderline(document.querySelector('[data-gsap="theme-label"]'));
+
+    var tL1 = document.querySelector('[data-gsap="theme-line1"]');
+    var tL2 = document.querySelector('[data-gsap="theme-line2"]');
+    if (tL1) {
+      var tTl = gsap.timeline({ scrollTrigger: { trigger: tL1, start: 'top 88%', once: true } });
+      tTl.from(tL1, { x: d(-60), opacity: 0, duration: 0.65, ease: 'power3.out' })
+         .from(tL2, { x: d(80),  opacity: 0, duration: 0.65, ease: 'power3.out' }, '-=0.5');
+    }
+
+    var tIntro = document.querySelector('[data-gsap="theme-intro"]');
+    if (tIntro) {
+      gsap.from(tIntro, {
+        opacity: 0, y: d(15), duration: 0.6, ease: 'power2.out',
+        scrollTrigger: { trigger: tIntro, start: 'top 88%', once: true }
+      });
+    }
+
+    var tQuotes = document.querySelectorAll('[data-gsap="theme-quote"]');
+    if (tQuotes.length) {
+      gsap.from(tQuotes, {
+        y: d(20), opacity: 0, duration: 0.6, stagger: 0.2, ease: 'power2.out',
+        scrollTrigger: { trigger: tQuotes[0], start: 'top 88%', once: true }
+      });
+    }
+
+    var tLost = document.querySelector('[data-gsap="theme-lost"]');
+    if (tLost) {
+      gsap.from(tLost, {
+        opacity: 0, y: d(15), duration: 0.6, ease: 'power2.out', delay: 0.3,
+        scrollTrigger: { trigger: tLost, start: 'top 88%', once: true }
+      });
+    }
+
+    var tBullets = document.querySelectorAll('[data-gsap="theme-bullet"]');
+    if (tBullets.length) {
+      gsap.from(tBullets, {
+        x: d(-20), opacity: 0, duration: 0.5, stagger: 0.12, ease: 'power2.out',
+        scrollTrigger: { trigger: tBullets[0], start: 'top 88%', once: true }
+      });
+    }
+
+    /* ─────────────────────────────────────
+       SECTION 5 — CONVENER
+    ───────────────────────────────────── */
+    var cPhoto = document.getElementById('convener-photo');
+    if (cPhoto) {
+      gsap.from(cPhoto, {
+        x: d(-40), opacity: 0, duration: 0.8, ease: 'power3.out',
+        scrollTrigger: { trigger: cPhoto, start: 'top 88%', once: true }
+      });
+    }
+
+    drawUnderline(document.querySelector('[data-gsap="convener-label"]'));
+
+    var cH2 = document.getElementById('convener-h2');
+    if (cH2) {
+      var cWords = splitWords(cH2);
+      if (cWords.length) {
+        gsap.from(cWords, {
+          y: d(30), opacity: 0, duration: 0.6, stagger: 0.08, ease: 'power3.out',
+          scrollTrigger: { trigger: cH2, start: 'top 88%', once: true }
+        });
+      }
+    }
+
+    var bParas = document.querySelectorAll('[data-gsap="bio-para"]');
+    if (bParas.length) {
+      gsap.from(bParas, {
+        y: d(20), opacity: 0, duration: 0.6, stagger: 0.18, ease: 'power2.out',
+        scrollTrigger: { trigger: bParas[0], start: 'top 88%', once: true }
+      });
+    }
+
+    /* Count-up stats */
+    var stat2m = document.getElementById('stat-2m');
+    if (stat2m) {
+      var s2 = { v: 0 };
+      ScrollTrigger.create({
+        trigger: stat2m, start: 'top 88%', once: true,
+        onEnter: function () {
+          gsap.to(s2, {
+            v: 2, duration: 2, ease: 'power2.out',
+            onUpdate: function () {
+              stat2m.textContent = '$' + (s2.v < 1 ? s2.v.toFixed(1) : Math.round(s2.v)) + 'M+';
+            }
+          });
+        }
+      });
+    }
+
+    var stat1k = document.getElementById('stat-1000s');
+    if (stat1k) {
+      var s1 = { v: 0 };
+      ScrollTrigger.create({
+        trigger: stat1k, start: 'top 88%', once: true,
+        onEnter: function () {
+          gsap.to(s1, {
+            v: 1000, duration: 2, ease: 'power2.out',
+            onUpdate: function () { stat1k.textContent = Math.round(s1.v) + 's'; }
+          });
+        }
+      });
+    }
+
+    /* ─────────────────────────────────────
+       SECTION 6 — WHAT TO EXPECT
+    ───────────────────────────────────── */
+    var exH2 = document.getElementById('expect-h2');
+    if (exH2) {
+      var exW = splitWords(exH2);
+      if (exW.length) {
+        gsap.from(exW, {
+          y: d(30), opacity: 0, duration: 0.6, stagger: 0.08, ease: 'power3.out',
+          scrollTrigger: { trigger: exH2, start: 'top 88%', once: true }
+        });
+      }
+    }
+
+    var fCards = document.querySelectorAll('[data-gsap="feature-card"]');
+    if (fCards.length) {
+      gsap.from(fCards, {
+        y: d(30), opacity: 0, duration: 0.6, stagger: 0.1, ease: 'power2.out',
+        scrollTrigger: { trigger: fCards[0], start: 'top 88%', once: true }
+      });
+    }
+
+    /* ─────────────────────────────────────
+       SECTION 7 — WHO SHOULD ATTEND
+    ───────────────────────────────────── */
+    var atH2 = document.getElementById('attend-h2');
+    if (atH2) {
+      var atW = splitWords(atH2);
+      if (atW.length) {
+        gsap.from(atW, {
+          y: d(30), opacity: 0, duration: 0.6, stagger: 0.08, ease: 'power3.out',
+          scrollTrigger: { trigger: atH2, start: 'top 88%', once: true }
+        });
+      }
+    }
+
+    var atItems = document.querySelectorAll('[data-gsap="attend-item"]');
+    if (atItems.length) {
+      gsap.from(atItems, {
+        x: d(-30), opacity: 0, duration: 0.6, stagger: 0.12, ease: 'power2.out',
+        scrollTrigger: { trigger: atItems[0], start: 'top 88%', once: true }
+      });
+      /* Number colour transition */
+      atItems.forEach(function (item) {
+        var num = item.querySelector('.serif');
+        if (num) {
+          gsap.fromTo(num,
+            { color: 'rgba(10,10,10,0.25)' },
+            { color: '#E05A1A', duration: 0.5, ease: 'power2.out',
+              scrollTrigger: { trigger: item, start: 'top 88%', once: true } }
+          );
+        }
+      });
+    }
+
+    /* ─────────────────────────────────────
+       SECTION 8 — TICKETS
+    ───────────────────────────────────── */
+    var tkH2 = document.getElementById('tickets-h2');
+    if (tkH2) {
+      var tkW = splitWords(tkH2);
+      if (tkW.length) {
+        gsap.from(tkW, {
+          y: d(30), opacity: 0, duration: 0.6, stagger: 0.08, ease: 'power3.out',
+          scrollTrigger: { trigger: tkH2, start: 'top 88%', once: true }
+        });
+      }
+    }
+
+    var tkCards = document.querySelectorAll('[data-gsap="ticket-card"]');
+    if (tkCards.length) {
+      gsap.from(tkCards, {
+        y: d(40), opacity: 0, scale: 0.97, duration: 0.7, stagger: 0.15, ease: 'power2.out',
+        scrollTrigger: { trigger: tkCards[0], start: 'top 88%', once: true }
+      });
+    }
+
+    var vipCard = document.getElementById('vip-card');
+    if (vipCard) {
+      ScrollTrigger.create({
+        trigger: vipCard, start: 'top 88%', once: true,
+        onEnter: function () {
+          setTimeout(function () { vipCard.classList.add('vip-glow-once'); }, 500);
+        }
+      });
+    }
+
+    /* ─────────────────────────────────────
+       SECTION 9 — SPONSORSHIP
+    ───────────────────────────────────── */
+    var spH2 = document.getElementById('sponsor-h2');
+    if (spH2) {
+      var spW = splitWords(spH2);
+      if (spW.length) {
+        gsap.from(spW, {
+          y: d(30), opacity: 0, duration: 0.6, stagger: 0.08, ease: 'power3.out',
+          scrollTrigger: { trigger: spH2, start: 'top 88%', once: true }
+        });
+      }
+    }
+
+    var spParas = document.querySelectorAll('[data-gsap="sponsor-para"]');
+    if (spParas.length) {
+      gsap.from(spParas, {
+        y: d(20), opacity: 0, duration: 0.6, stagger: 0.15, ease: 'power2.out',
+        scrollTrigger: { trigger: spParas[0], start: 'top 88%', once: true }
+      });
+    }
+
+    var spCta = document.getElementById('sponsor-cta');
+    if (spCta) {
+      ScrollTrigger.create({
+        trigger: spCta, start: 'top 88%', once: true,
+        onEnter: function () {
+          gsap.fromTo(spCta, { scale: 1 }, { scale: 1.03, duration: 0.2, yoyo: true, repeat: 1, ease: 'power2.inOut' });
+        }
+      });
+    }
+
+    /* ─────────────────────────────────────
+       SECTION 10 — BLOG
+    ───────────────────────────────────── */
+    var blH2 = document.getElementById('blog-h2');
+    if (blH2) {
+      var blW = splitWords(blH2);
+      if (blW.length) {
+        gsap.from(blW, {
+          y: d(30), opacity: 0, duration: 0.6, stagger: 0.08, ease: 'power3.out',
+          scrollTrigger: { trigger: blH2, start: 'top 88%', once: true }
+        });
+      }
+    }
+
+    var blCards = document.querySelectorAll('[data-gsap="blog-card"]');
+    if (blCards.length) {
+      gsap.from(blCards, {
+        y: d(30), opacity: 0, duration: 0.6, stagger: 0.15, ease: 'power2.out',
+        scrollTrigger: { trigger: blCards[0], start: 'top 88%', once: true }
+      });
+    }
+
+    /* ─────────────────────────────────────
+       SECTION 11 — FAQ
+    ───────────────────────────────────── */
+    var fqH2 = document.getElementById('faq-h2');
+    if (fqH2) {
+      var fqW = splitWords(fqH2);
+      if (fqW.length) {
+        gsap.from(fqW, {
+          y: d(30), opacity: 0, duration: 0.6, stagger: 0.08, ease: 'power3.out',
+          scrollTrigger: { trigger: fqH2, start: 'top 88%', once: true }
+        });
+      }
+    }
+
+    var fqItems = document.querySelectorAll('[data-gsap="faq-item"]');
+    if (fqItems.length) {
+      gsap.from(fqItems, {
+        y: d(15), opacity: 0, duration: 0.5, stagger: 0.08, ease: 'power2.out',
+        scrollTrigger: { trigger: fqItems[0], start: 'top 88%', once: true }
+      });
+    }
+
+    /* ─────────────────────────────────────
+       SECTION 12 — CLOSING CTA
+    ───────────────────────────────────── */
+    var clQuote = document.getElementById('closing-quote');
+    if (clQuote) {
+      gsap.from(clQuote, {
+        opacity: 0, y: d(30), duration: 1, ease: 'power2.out',
+        scrollTrigger: { trigger: clQuote, start: 'top 88%', once: true }
+      });
+    }
+
+    var clCta = document.getElementById('closing-cta');
+    if (clCta) {
+      ScrollTrigger.create({
+        trigger: clCta, start: 'top 88%', once: true,
+        onEnter: function () {
+          gsap.fromTo(clCta, { scale: 1 }, { scale: 1.04, duration: 0.22, yoyo: true, repeat: 1, ease: 'power2.inOut' });
+        }
+      });
+    }
+
+    /* Closing background parallax */
+    var clBg = document.getElementById('closing-bg-grid');
+    if (clBg) {
+      gsap.to(clBg, {
+        y: d(-50), ease: 'none',
+        scrollTrigger: { trigger: '#closing-section', start: 'top bottom', end: 'bottom top', scrub: true }
+      });
+    }
+
+  }); /* end waitForGSAP */
+})();
 </script>
 </body>
 </html>
