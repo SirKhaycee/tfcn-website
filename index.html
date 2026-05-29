@@ -247,7 +247,7 @@ function TiltCard({ children, className, style, ...props }) {
 }
 
 function MobileMenu({ onClose }) {
-  const links = [['/', 'Home'], ['#about', 'About'], ['#host', 'Convener'], ['#tickets', 'Tickets'], ['#faq', 'FAQ'], ['blog.html', 'Blog']];
+  const links = [['/', 'Home'], ['#about', 'About'], ['#host', 'Convener'], ['#tickets', 'Tickets'], ['attending.html', 'Get Your DP'], ['#faq', 'FAQ'], ['blog.html', 'Blog']];
   useEffect(() => {
     document.body.style.overflow = 'hidden';
     return () => { document.body.style.overflow = ''; };
@@ -403,6 +403,7 @@ function App() {
             <a href="#about" className="nav-link hidden md:block text-sm font-medium text-[#0A0A0A]/60 hover:text-[#0A0A0A] px-4 py-2 transition">About</a>
             <a href="#host" className="nav-link hidden md:block text-sm font-medium text-[#0A0A0A]/60 hover:text-[#0A0A0A] px-4 py-2 transition">Convener</a>
             <a href="#tickets" className="nav-link hidden md:block text-sm font-medium text-[#0A0A0A]/60 hover:text-[#0A0A0A] px-4 py-2 transition">Tickets</a>
+            <a href="attending.html" className="nav-link hidden md:block text-sm font-bold text-[#E05A1A] hover:text-[#c44d14] px-4 py-2 transition">Get Your DP</a>
             <a href="#faq" className="nav-link hidden md:block text-sm font-medium text-[#0A0A0A]/60 hover:text-[#0A0A0A] px-4 py-2 transition">FAQ</a>
             <a href="blog.html" className="nav-link hidden md:block text-sm font-medium text-[#0A0A0A]/60 hover:text-[#0A0A0A] px-4 py-2 transition">Blog</a>
             <a href="#tickets" className="hidden md:inline-flex items-center gap-1.5 bg-[#0A0A0A] text-white px-5 py-2.5 text-sm font-semibold rounded-full hover:bg-[#E05A1A] transition-all duration-300">
@@ -796,6 +797,19 @@ function App() {
               <FAQItem key={i} q={f.q} a={f.a} open={openFaq === i} onClick={() => setOpenFaq(openFaq === i ? -1 : i)}/>
             ))}
           </div>
+        </div>
+      </section>
+
+      {/* ATTENDING BANNER */}
+      <section id="attending-banner" className="py-16 lg:py-20 px-5 lg:px-10 bg-[#E05A1A]">
+        <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-8">
+          <div>
+            <p className="text-[10px] sm:text-xs font-bold tracking-[0.25em] uppercase text-white/70 mb-3">Attending TFCN 2026?</p>
+            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold tracking-[-0.03em] text-white leading-tight">Show the world you're<br className="hidden sm:block"/> part of the cycle.</h2>
+          </div>
+          <a href="attending.html" className="flex-shrink-0 inline-flex items-center gap-3 bg-white text-[#E05A1A] px-8 py-4 text-sm font-bold tracking-[0.08em] uppercase rounded-full hover:bg-[#0A0A0A] hover:text-white transition-all duration-300 whitespace-nowrap">
+            Get Your Attending DP <span style={{fontSize:'1.1em'}}>&#8594;</span>
+          </a>
         </div>
       </section>
 
