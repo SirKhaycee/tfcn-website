@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -10,10 +10,10 @@
 <meta name="keywords" content="The Old Taker, TFCN 2026 theme, wealth cycle, financial loss Africa, cycle investing, TFCN, The Finance Cycle Network, wealth preservation Africa">
 <meta name="author" content="Sir K.C Onyekachi">
 <meta name="robots" content="index, follow">
-<link rel="canonical" href="https://thefinancecyclenetwork.com/blog-old-taker.html">
+<link rel="canonical" href="https://thefinancecyclenetwork.com/blog-old-taker">
 <!-- Open Graph -->
 <meta property="og:type" content="article">
-<meta property="og:url" content="https://thefinancecyclenetwork.com/blog-old-taker.html">
+<meta property="og:url" content="https://thefinancecyclenetwork.com/blog-old-taker">
 <meta property="og:site_name" content="The Finance Cycle Network">
 <meta property="og:locale" content="en_NG">
 <meta property="og:title" content="The Old Taker: Understanding the 2026 Theme">
@@ -26,7 +26,7 @@
 <meta property="article:tag" content="The Old Taker, TFCN 2026, wealth cycles, Africa">
 <!-- Twitter / X -->
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:url" content="https://thefinancecyclenetwork.com/blog-old-taker.html">
+<meta name="twitter:url" content="https://thefinancecyclenetwork.com/blog-old-taker">
 <meta name="twitter:title" content="The Old Taker: Understanding the 2026 Theme">
 <meta name="twitter:description" content="The Old Taker is not a failure. They had real money, real assets, real momentum. And then the cycle turned. Understanding this figure is the first step to not becoming one.">
 <meta name="twitter:image" content="https://thefinancecyclenetwork.com/tfcn-logo.png">
@@ -59,9 +59,9 @@
   },
   "mainEntityOfPage": {
     "@type": "WebPage",
-    "@id": "https://thefinancecyclenetwork.com/blog-old-taker.html"
+    "@id": "https://thefinancecyclenetwork.com/blog-old-taker"
   },
-  "url": "https://thefinancecyclenetwork.com/blog-old-taker.html",
+  "url": "https://thefinancecyclenetwork.com/blog-old-taker",
   "keywords": "The Old Taker, TFCN 2026, wealth cycles, Africa, financial loss"
 }
 </script>
@@ -115,7 +115,7 @@ function Logo({ size = 32 }) {
 }
 
 function MobileMenu({ onClose }) {
-  const links = [['/', 'Home'],['/#about','About'],['/#host','Convener'],['/#tickets','Tickets'],['attending.html','Get Your DP'],['/#faq','FAQ'],['blog.html','Blog']];
+  const links = [['/', 'Home'],['/#about','About'],['/#host','Convener'],['/#tickets','Tickets'],['/attending','Get Your DP'],['/#faq','FAQ'],['/blog','Blog']];
   useEffect(() => { document.body.style.overflow = 'hidden'; return () => { document.body.style.overflow = ''; }; }, []);
   return (
     <div className="menu-slide fixed inset-0 z-50 bg-[#0A0A0A] flex flex-col">
@@ -137,8 +137,8 @@ function MobileMenu({ onClose }) {
 }
 
 const related = [
-  { title: "Why Africa's Wealthiest Operators Think in Cycles", tag: 'Wealth Cycles', readTime: '5 min read', bg: '#0A0A0A', stripe: 'rgba(224,90,26,0.18)', textCol: '#ffffff', arrowBg: '#E05A1A', slug: 'blog-cycles.html' },
-  { title: 'Behind TFCN: The Vision of Sir K.C Onyekachi', tag: 'Convener', readTime: '4 min read', bg: '#F0EDE8', stripe: 'rgba(224,90,26,0.13)', textCol: '#0A0A0A', arrowBg: '#0A0A0A', slug: 'blog-behind-tfcn.html' },
+  { title: "Why Africa's Wealthiest Operators Think in Cycles", tag: 'Wealth Cycles', readTime: '5 min read', bg: '#0A0A0A', stripe: 'rgba(224,90,26,0.18)', textCol: '#ffffff', arrowBg: '#E05A1A', slug: '/blog-cycles' },
+  { title: 'Behind TFCN: The Vision of Sir K.C Onyekachi', tag: 'Convener', readTime: '4 min read', bg: '#F0EDE8', stripe: 'rgba(224,90,26,0.13)', textCol: '#0A0A0A', arrowBg: '#0A0A0A', slug: '/blog-behind-tfcn' },
 ];
 
 function App() {
@@ -172,8 +172,8 @@ function App() {
             <a href="/#about" className={`nav-link hidden md:block text-sm font-medium px-4 py-2 transition ${linkColor}`}>About</a>
             <a href="/#host" className={`nav-link hidden md:block text-sm font-medium px-4 py-2 transition ${linkColor}`}>Convener</a>
             <a href="/#tickets" className={`nav-link hidden md:block text-sm font-medium px-4 py-2 transition ${linkColor}`}>Tickets</a>
-            <a href="attending.html" className="nav-link hidden md:block text-sm font-bold text-[#E05A1A] hover:text-[#c44d14] px-4 py-2 transition">Get Your DP</a>
-            <a href="blog.html" className="nav-link hidden md:block text-sm font-semibold text-[#E05A1A] px-4 py-2 transition">Blog</a>
+            <a href="/attending" className="nav-link hidden md:block text-sm font-bold text-[#E05A1A] hover:text-[#c44d14] px-4 py-2 transition">Get Your DP</a>
+            <a href="/blog" className="nav-link hidden md:block text-sm font-semibold text-[#E05A1A] px-4 py-2 transition">Blog</a>
             <a href="https://app.eventpadi.com/thefinancecyclenetwork" target="_blank" rel="noopener noreferrer" className="hidden md:inline-flex items-center gap-1.5 bg-[#0A0A0A] text-white px-5 py-2.5 text-sm font-semibold rounded-full hover:bg-[#E05A1A] transition-all duration-300">Register <Icon name="arrow" size={12}/></a>
             <button onClick={() => setMenuOpen(true)} className={`md:hidden flex items-center justify-center w-10 h-10 transition-colors duration-500 ${menuColor}`}><Icon name="menu" size={22} strokeWidth={2}/></button>
           </div>
@@ -185,7 +185,7 @@ function App() {
         <div className="absolute inset-0 opacity-[0.08]" style={{ backgroundImage: 'linear-gradient(#000000 1px, transparent 1px), linear-gradient(90deg, #000000 1px, transparent 1px)', backgroundSize: '60px 60px' }}/>
         <div className="absolute bottom-0 right-0 w-48 h-48 lg:w-72 lg:h-72 opacity-20" style={{ background: 'radial-gradient(circle, #000 0%, transparent 70%)' }}/>
         <div className="max-w-4xl mx-auto relative">
-          <a href="blog.html" className="animate-fadeUp inline-flex items-center gap-2 text-white/50 hover:text-white text-sm font-medium transition-colors duration-300 mb-10 group">
+          <a href="/blog" className="animate-fadeUp inline-flex items-center gap-2 text-white/50 hover:text-white text-sm font-medium transition-colors duration-300 mb-10 group">
             <span className="group-hover:-translate-x-1 transition-transform duration-300 inline-block"><Icon name="arrowLeft" size={15}/></span> Back to Blog
           </a>
           <div className="animate-fadeUp delay-100 flex items-center gap-3 mb-6">

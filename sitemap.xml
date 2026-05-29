@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+﻿<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 
   <url>
@@ -9,35 +9,35 @@
   </url>
 
   <url>
-    <loc>https://thefinancecyclenetwork.com/attending.html</loc>
+    <loc>https://thefinancecyclenetwork.com/attending</loc>
     <lastmod>2026-05-29</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
 
   <url>
-    <loc>https://thefinancecyclenetwork.com/blog.html</loc>
+    <loc>https://thefinancecyclenetwork.com/blog</loc>
     <lastmod>2026-05-25</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
 
   <url>
-    <loc>https://thefinancecyclenetwork.com/blog-cycles.html</loc>
+    <loc>https://thefinancecyclenetwork.com/blog-cycles</loc>
     <lastmod>2026-05-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
 
   <url>
-    <loc>https://thefinancecyclenetwork.com/blog-old-taker.html</loc>
+    <loc>https://thefinancecyclenetwork.com/blog-old-taker</loc>
     <lastmod>2026-05-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
 
   <url>
-    <loc>https://thefinancecyclenetwork.com/blog-behind-tfcn.html</loc>
+    <loc>https://thefinancecyclenetwork.com/blog-behind-tfcn</loc>
     <lastmod>2026-05-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>

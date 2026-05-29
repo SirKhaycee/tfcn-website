@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -10,10 +10,10 @@
 <meta name="keywords" content="Sir KC Onyekachi, TFCN founder, The Finance Cycle Network vision, finance conference Africa, curated finance event, TFCN behind the scenes, Lagos finance event">
 <meta name="author" content="Sir K.C Onyekachi">
 <meta name="robots" content="index, follow">
-<link rel="canonical" href="https://thefinancecyclenetwork.com/blog-behind-tfcn.html">
+<link rel="canonical" href="https://thefinancecyclenetwork.com/blog-behind-tfcn">
 <!-- Open Graph -->
 <meta property="og:type" content="article">
-<meta property="og:url" content="https://thefinancecyclenetwork.com/blog-behind-tfcn.html">
+<meta property="og:url" content="https://thefinancecyclenetwork.com/blog-behind-tfcn">
 <meta property="og:site_name" content="The Finance Cycle Network">
 <meta property="og:locale" content="en_NG">
 <meta property="og:title" content="Behind TFCN: The Vision of Sir K.C Onyekachi">
@@ -26,7 +26,7 @@
 <meta property="article:tag" content="TFCN, Sir KC Onyekachi, finance Africa, curated events">
 <!-- Twitter / X -->
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:url" content="https://thefinancecyclenetwork.com/blog-behind-tfcn.html">
+<meta name="twitter:url" content="https://thefinancecyclenetwork.com/blog-behind-tfcn">
 <meta name="twitter:title" content="Behind TFCN: The Vision of Sir K.C Onyekachi">
 <meta name="twitter:description" content="Africa doesn't have a shortage of financial events. It has a shortage of honest ones. Sir K.C Onyekachi on why he built The Finance Cycle Network.">
 <meta name="twitter:image" content="https://thefinancecyclenetwork.com/tfcn-logo.png">
@@ -59,9 +59,9 @@
   },
   "mainEntityOfPage": {
     "@type": "WebPage",
-    "@id": "https://thefinancecyclenetwork.com/blog-behind-tfcn.html"
+    "@id": "https://thefinancecyclenetwork.com/blog-behind-tfcn"
   },
-  "url": "https://thefinancecyclenetwork.com/blog-behind-tfcn.html",
+  "url": "https://thefinancecyclenetwork.com/blog-behind-tfcn",
   "keywords": "Sir KC Onyekachi, TFCN, The Finance Cycle Network, finance Africa, Lagos"
 }
 </script>
@@ -117,7 +117,7 @@ function Logo({ size = 32 }) {
 }
 
 function MobileMenu({ onClose }) {
-  const links = [['/', 'Home'],['/#about','About'],['/#host','Convener'],['/#tickets','Tickets'],['attending.html','Get Your DP'],['/#faq','FAQ'],['blog.html','Blog']];
+  const links = [['/', 'Home'],['/#about','About'],['/#host','Convener'],['/#tickets','Tickets'],['/attending','Get Your DP'],['/#faq','FAQ'],['/blog','Blog']];
   useEffect(() => { document.body.style.overflow = 'hidden'; return () => { document.body.style.overflow = ''; }; }, []);
   return (
     <div className="menu-slide fixed inset-0 z-50 bg-[#0A0A0A] flex flex-col">
@@ -139,8 +139,8 @@ function MobileMenu({ onClose }) {
 }
 
 const related = [
-  { title: "Why Africa's Wealthiest Operators Think in Cycles", tag: 'Wealth Cycles', readTime: '5 min read', bg: '#0A0A0A', stripe: 'rgba(224,90,26,0.18)', textCol: '#ffffff', arrowBg: '#E05A1A', slug: 'blog-cycles.html' },
-  { title: 'The Old Taker: Understanding the 2026 Theme', tag: '2026 Theme', readTime: '4 min read', bg: '#E05A1A', stripe: 'rgba(0,0,0,0.13)', textCol: '#ffffff', arrowBg: '#0A0A0A', slug: 'blog-old-taker.html' },
+  { title: "Why Africa's Wealthiest Operators Think in Cycles", tag: 'Wealth Cycles', readTime: '5 min read', bg: '#0A0A0A', stripe: 'rgba(224,90,26,0.18)', textCol: '#ffffff', arrowBg: '#E05A1A', slug: '/blog-cycles' },
+  { title: 'The Old Taker: Understanding the 2026 Theme', tag: '2026 Theme', readTime: '4 min read', bg: '#E05A1A', stripe: 'rgba(0,0,0,0.13)', textCol: '#ffffff', arrowBg: '#0A0A0A', slug: '/blog-old-taker' },
 ];
 
 function App() {
@@ -171,8 +171,8 @@ function App() {
             <a href="/#about" className="nav-link hidden md:block text-sm font-medium text-[#0A0A0A]/60 hover:text-[#0A0A0A] px-4 py-2 transition">About</a>
             <a href="/#host" className="nav-link hidden md:block text-sm font-medium text-[#0A0A0A]/60 hover:text-[#0A0A0A] px-4 py-2 transition">Convener</a>
             <a href="/#tickets" className="nav-link hidden md:block text-sm font-medium text-[#0A0A0A]/60 hover:text-[#0A0A0A] px-4 py-2 transition">Tickets</a>
-            <a href="attending.html" className="nav-link hidden md:block text-sm font-bold text-[#E05A1A] hover:text-[#c44d14] px-4 py-2 transition">Get Your DP</a>
-            <a href="blog.html" className="nav-link hidden md:block text-sm font-semibold text-[#E05A1A] px-4 py-2 transition">Blog</a>
+            <a href="/attending" className="nav-link hidden md:block text-sm font-bold text-[#E05A1A] hover:text-[#c44d14] px-4 py-2 transition">Get Your DP</a>
+            <a href="/blog" className="nav-link hidden md:block text-sm font-semibold text-[#E05A1A] px-4 py-2 transition">Blog</a>
             <a href="https://app.eventpadi.com/thefinancecyclenetwork" target="_blank" rel="noopener noreferrer" className="hidden md:inline-flex items-center gap-1.5 bg-[#0A0A0A] text-white px-5 py-2.5 text-sm font-semibold rounded-full hover:bg-[#E05A1A] transition-all duration-300">Register <Icon name="arrow" size={12}/></a>
             <button onClick={() => setMenuOpen(true)} className="md:hidden flex items-center justify-center w-10 h-10 text-[#0A0A0A]"><Icon name="menu" size={22} strokeWidth={2}/></button>
           </div>
@@ -185,7 +185,7 @@ function App() {
         <div className="absolute top-24 right-12 w-16 h-16 lg:w-28 lg:h-28 bg-[#E05A1A] opacity-60 animate-float"/>
         <div className="absolute bottom-8 left-16 w-8 h-8 lg:w-14 lg:h-14 bg-[#0A0A0A] opacity-10"/>
         <div className="max-w-4xl mx-auto relative">
-          <a href="blog.html" className="animate-fadeUp inline-flex items-center gap-2 text-[#0A0A0A]/40 hover:text-[#E05A1A] text-sm font-medium transition-colors duration-300 mb-10 group">
+          <a href="/blog" className="animate-fadeUp inline-flex items-center gap-2 text-[#0A0A0A]/40 hover:text-[#E05A1A] text-sm font-medium transition-colors duration-300 mb-10 group">
             <span className="group-hover:-translate-x-1 transition-transform duration-300 inline-block"><Icon name="arrowLeft" size={15}/></span> Back to Blog
           </a>
           <div className="animate-fadeUp delay-100 flex items-center gap-3 mb-6">

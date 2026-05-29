@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -10,10 +10,10 @@
 <meta name="keywords" content="TFCN blog, finance Africa, wealth cycles Africa, capital allocators, financial cycles Nigeria, investment thinking Africa, The Finance Cycle Network">
 <meta name="author" content="Sir K.C Onyekachi">
 <meta name="robots" content="index, follow">
-<link rel="canonical" href="https://thefinancecyclenetwork.com/blog.html">
+<link rel="canonical" href="https://thefinancecyclenetwork.com/blog">
 <!-- Open Graph -->
 <meta property="og:type" content="website">
-<meta property="og:url" content="https://thefinancecyclenetwork.com/blog.html">
+<meta property="og:url" content="https://thefinancecyclenetwork.com/blog">
 <meta property="og:site_name" content="The Finance Cycle Network">
 <meta property="og:locale" content="en_NG">
 <meta property="og:title" content="The TFCN Blog | Finance, Wealth Cycles and Capital in Africa">
@@ -22,7 +22,7 @@
 <meta property="og:image:alt" content="The Finance Cycle Network Blog">
 <!-- Twitter / X -->
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:url" content="https://thefinancecyclenetwork.com/blog.html">
+<meta name="twitter:url" content="https://thefinancecyclenetwork.com/blog">
 <meta name="twitter:title" content="The TFCN Blog | Finance, Wealth Cycles and Capital in Africa">
 <meta name="twitter:description" content="Sharp thinking on finance, cycles, and wealth building in Africa. From the team behind Africa's most curated gathering.">
 <meta name="twitter:image" content="https://thefinancecyclenetwork.com/tfcn-logo.png">
@@ -36,7 +36,7 @@
   "@type": "Blog",
   "name": "The TFCN Blog",
   "description": "Sharp thinking on finance, cycles, and wealth building in Africa.",
-  "url": "https://thefinancecyclenetwork.com/blog.html",
+  "url": "https://thefinancecyclenetwork.com/blog",
   "publisher": {
     "@type": "Organization",
     "name": "The Finance Cycle Network",
@@ -100,7 +100,7 @@ function Logo({ size = 32 }) {
 }
 
 function MobileMenu({ onClose }) {
-  const links = [['/', 'Home'],['/#about','About'],['/#host','Convener'],['/#tickets','Tickets'],['attending.html','Get Your DP'],['/#faq','FAQ'],['blog.html','Blog']];
+  const links = [['/', 'Home'],['/#about','About'],['/#host','Convener'],['/#tickets','Tickets'],['/attending','Get Your DP'],['/#faq','FAQ'],['/blog','Blog']];
   useEffect(() => { document.body.style.overflow = 'hidden'; return () => { document.body.style.overflow = ''; }; }, []);
   return (
     <div className="menu-slide fixed inset-0 z-50 bg-[#0A0A0A] flex flex-col">
@@ -135,9 +135,9 @@ function TiltCard({ children, className, style, ...props }) {
 }
 
 const articles = [
-  { title: "Why Africa's Wealthiest Operators Think in Cycles", tag: 'Wealth Cycles', excerpt: "Markets move in cycles. What separates those who build lasting wealth from those who reset to zero is not luck. It is the ability to read the room before everyone else does.", readTime: '5 min read', bg: '#0A0A0A', stripe: 'rgba(224,90,26,0.18)', textCol: '#ffffff', arrowBg: '#E05A1A', slug: 'blog-cycles.html' },
-  { title: 'The Old Taker: Understanding the 2026 Theme', tag: '2026 Theme', excerpt: "The Old Taker is not a failure. That's the important distinction. They had it: real money, real assets, real momentum. And then the cycle turned, and they didn't move.", readTime: '4 min read', bg: '#E05A1A', stripe: 'rgba(0,0,0,0.13)', textCol: '#ffffff', arrowBg: '#0A0A0A', slug: 'blog-old-taker.html' },
-  { title: 'Behind TFCN: The Vision of Sir K.C Onyekachi', tag: 'Convener', excerpt: "Africa doesn't have a shortage of financial events. It has a shortage of honest ones. This is why TFCN exists.", readTime: '4 min read', bg: '#F0EDE8', stripe: 'rgba(224,90,26,0.13)', textCol: '#0A0A0A', arrowBg: '#0A0A0A', slug: 'blog-behind-tfcn.html' },
+  { title: "Why Africa's Wealthiest Operators Think in Cycles", tag: 'Wealth Cycles', excerpt: "Markets move in cycles. What separates those who build lasting wealth from those who reset to zero is not luck. It is the ability to read the room before everyone else does.", readTime: '5 min read', bg: '#0A0A0A', stripe: 'rgba(224,90,26,0.18)', textCol: '#ffffff', arrowBg: '#E05A1A', slug: '/blog-cycles' },
+  { title: 'The Old Taker: Understanding the 2026 Theme', tag: '2026 Theme', excerpt: "The Old Taker is not a failure. That's the important distinction. They had it: real money, real assets, real momentum. And then the cycle turned, and they didn't move.", readTime: '4 min read', bg: '#E05A1A', stripe: 'rgba(0,0,0,0.13)', textCol: '#ffffff', arrowBg: '#0A0A0A', slug: '/blog-old-taker' },
+  { title: 'Behind TFCN: The Vision of Sir K.C Onyekachi', tag: 'Convener', excerpt: "Africa doesn't have a shortage of financial events. It has a shortage of honest ones. This is why TFCN exists.", readTime: '4 min read', bg: '#F0EDE8', stripe: 'rgba(224,90,26,0.13)', textCol: '#0A0A0A', arrowBg: '#0A0A0A', slug: '/blog-behind-tfcn' },
 ];
 
 function App() {
@@ -166,8 +166,8 @@ function App() {
             <a href="/#about" className="nav-link hidden md:block text-sm font-medium text-[#0A0A0A]/60 hover:text-[#0A0A0A] px-4 py-2 transition">About</a>
             <a href="/#host" className="nav-link hidden md:block text-sm font-medium text-[#0A0A0A]/60 hover:text-[#0A0A0A] px-4 py-2 transition">Convener</a>
             <a href="/#tickets" className="nav-link hidden md:block text-sm font-medium text-[#0A0A0A]/60 hover:text-[#0A0A0A] px-4 py-2 transition">Tickets</a>
-            <a href="attending.html" className="nav-link hidden md:block text-sm font-bold text-[#E05A1A] hover:text-[#c44d14] px-4 py-2 transition">Get Your DP</a>
-            <a href="blog.html" className="nav-link hidden md:block text-sm font-semibold text-[#E05A1A] px-4 py-2 transition">Blog</a>
+            <a href="/attending" className="nav-link hidden md:block text-sm font-bold text-[#E05A1A] hover:text-[#c44d14] px-4 py-2 transition">Get Your DP</a>
+            <a href="/blog" className="nav-link hidden md:block text-sm font-semibold text-[#E05A1A] px-4 py-2 transition">Blog</a>
             <a href="https://app.eventpadi.com/thefinancecyclenetwork" target="_blank" rel="noopener noreferrer" className="hidden md:inline-flex items-center gap-1.5 bg-[#0A0A0A] text-white px-5 py-2.5 text-sm font-semibold rounded-full hover:bg-[#E05A1A] transition-all duration-300">Register <Icon name="arrow" size={12}/></a>
             <button onClick={() => setMenuOpen(true)} className="md:hidden flex items-center justify-center w-10 h-10 text-[#0A0A0A]"><Icon name="menu" size={22} strokeWidth={2}/></button>
           </div>

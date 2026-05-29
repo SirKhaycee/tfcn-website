@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -247,7 +247,7 @@ function TiltCard({ children, className, style, ...props }) {
 }
 
 function MobileMenu({ onClose }) {
-  const links = [['/', 'Home'], ['#about', 'About'], ['#host', 'Convener'], ['#tickets', 'Tickets'], ['attending.html', 'Get Your DP'], ['#faq', 'FAQ'], ['blog.html', 'Blog']];
+  const links = [['/', 'Home'], ['#about', 'About'], ['#host', 'Convener'], ['#tickets', 'Tickets'], ['/attending', 'Get Your DP'], ['#faq', 'FAQ'], ['/blog', 'Blog']];
   useEffect(() => {
     document.body.style.overflow = 'hidden';
     return () => { document.body.style.overflow = ''; };
@@ -403,9 +403,9 @@ function App() {
             <a href="#about" className="nav-link hidden md:block text-sm font-medium text-[#0A0A0A]/60 hover:text-[#0A0A0A] px-4 py-2 transition">About</a>
             <a href="#host" className="nav-link hidden md:block text-sm font-medium text-[#0A0A0A]/60 hover:text-[#0A0A0A] px-4 py-2 transition">Convener</a>
             <a href="#tickets" className="nav-link hidden md:block text-sm font-medium text-[#0A0A0A]/60 hover:text-[#0A0A0A] px-4 py-2 transition">Tickets</a>
-            <a href="attending.html" className="nav-link hidden md:block text-sm font-bold text-[#E05A1A] hover:text-[#c44d14] px-4 py-2 transition">Get Your DP</a>
+            <a href="/attending" className="nav-link hidden md:block text-sm font-bold text-[#E05A1A] hover:text-[#c44d14] px-4 py-2 transition">Get Your DP</a>
             <a href="#faq" className="nav-link hidden md:block text-sm font-medium text-[#0A0A0A]/60 hover:text-[#0A0A0A] px-4 py-2 transition">FAQ</a>
-            <a href="blog.html" className="nav-link hidden md:block text-sm font-medium text-[#0A0A0A]/60 hover:text-[#0A0A0A] px-4 py-2 transition">Blog</a>
+            <a href="/blog" className="nav-link hidden md:block text-sm font-medium text-[#0A0A0A]/60 hover:text-[#0A0A0A] px-4 py-2 transition">Blog</a>
             <a href="#tickets" className="hidden md:inline-flex items-center gap-1.5 bg-[#0A0A0A] text-white px-5 py-2.5 text-sm font-semibold rounded-full hover:bg-[#E05A1A] transition-all duration-300">
               Register <Icon name="arrow" size={12}/>
             </a>
@@ -754,9 +754,9 @@ function App() {
           </div>
           <div className="grid md:grid-cols-3 gap-6 scroll-reveal">
             {[
-              { title: "Why Africa's Wealthiest Operators Think in Cycles", tag: 'Wealth Cycles', bg: '#0A0A0A', stripe: 'rgba(224,90,26,0.18)', textCol: '#ffffff', slug: 'blog-cycles.html' },
-              { title: 'The Old Taker: Understanding the 2026 Theme', tag: '2026 Theme', bg: '#E05A1A', stripe: 'rgba(0,0,0,0.13)', textCol: '#ffffff', slug: 'blog-old-taker.html' },
-              { title: 'Behind TFCN: The Vision of Sir K.C Onyekachi', tag: 'Convener', bg: '#F0EDE8', stripe: 'rgba(224,90,26,0.13)', textCol: '#0A0A0A', slug: 'blog-behind-tfcn.html' },
+              { title: "Why Africa's Wealthiest Operators Think in Cycles", tag: 'Wealth Cycles', bg: '#0A0A0A', stripe: 'rgba(224,90,26,0.18)', textCol: '#ffffff', slug: '/blog-cycles' },
+              { title: 'The Old Taker: Understanding the 2026 Theme', tag: '2026 Theme', bg: '#E05A1A', stripe: 'rgba(0,0,0,0.13)', textCol: '#ffffff', slug: '/blog-old-taker' },
+              { title: 'Behind TFCN: The Vision of Sir K.C Onyekachi', tag: 'Convener', bg: '#F0EDE8', stripe: 'rgba(224,90,26,0.13)', textCol: '#0A0A0A', slug: '/blog-behind-tfcn' },
             ].map((post, i) => (
               <TiltCard key={i} data-gsap="blog-card" className="group cursor-pointer" style={{ borderRadius: '16px' }}>
                 <a href={post.slug} className="block">
@@ -776,7 +776,7 @@ function App() {
             ))}
           </div>
           <div className="mt-12 text-center scroll-reveal">
-            <a href="blog.html" className="inline-flex items-center gap-2 text-sm font-semibold text-[#0A0A0A]/50 hover:text-[#E05A1A] transition-colors duration-300 group">
+            <a href="/blog" className="inline-flex items-center gap-2 text-sm font-semibold text-[#0A0A0A]/50 hover:text-[#E05A1A] transition-colors duration-300 group">
               View all articles <span className="group-hover:translate-x-1 transition-transform duration-300 inline-block"><Icon name="arrow" size={14}/></span>
             </a>
           </div>
@@ -807,7 +807,7 @@ function App() {
             <p className="text-[10px] sm:text-xs font-bold tracking-[0.25em] uppercase text-white/70 mb-3">Attending TFCN 2026?</p>
             <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold tracking-[-0.03em] text-white leading-tight">Show the world you're<br className="hidden sm:block"/> part of the cycle.</h2>
           </div>
-          <a href="attending.html" className="flex-shrink-0 inline-flex items-center gap-3 bg-white text-[#E05A1A] px-8 py-4 text-sm font-bold tracking-[0.08em] uppercase rounded-full hover:bg-[#0A0A0A] hover:text-white transition-all duration-300 whitespace-nowrap">
+          <a href="/attending" className="flex-shrink-0 inline-flex items-center gap-3 bg-white text-[#E05A1A] px-8 py-4 text-sm font-bold tracking-[0.08em] uppercase rounded-full hover:bg-[#0A0A0A] hover:text-white transition-all duration-300 whitespace-nowrap">
             Get Your Attending DP <span style={{fontSize:'1.1em'}}>&#8594;</span>
           </a>
         </div>
