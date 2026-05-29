@@ -270,13 +270,13 @@ function App() {
       const url = URL.createObjectURL(blob);
       const a   = document.createElement('a');
       a.href     = url;
-      a.download = 'TFCN2026-AttendingDP.png';
+      a.download = 'TFCN2026-AttendingDP.jpg';
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
       setDownloaded(true);
-    }, 'image/png');
+    }, 'image/jpeg', 0.95);
   };
 
   /* ── copy to clipboard (Instagram) ── */
