@@ -105,8 +105,8 @@ function MobileMenu({ onClose }) {
 
 /* ── canvas constants (1080x1080) ── */
 const CS     = 1080;
-const PBOX   = { x: 95,  y: 285, w: 385, h: 430 }; /* photo box */
-const NBOX   = { x: 490, y: 290, w: 340, h: 65  }; /* name box  */
+const PBOX   = { x: 152, y: 306, w: 334, h: 356 }; /* photo box — pixel-accurate */
+const NBOX   = { x: 534, y: 372, w: 322, h: 65  }; /* name box  — pixel-accurate */
 
 /* ── main app ── */
 function App() {
@@ -162,37 +162,44 @@ function App() {
     /* 1. template base */
     ctx.drawImage(templateImg, 0, 0, CS, CS);
 
-    /* 2. user photo clipped to box */
+    /* 2. user photo — cover-fit, face-top-biased, clipped to box */
     if (photo) {
       ctx.save();
       ctx.beginPath();
       ctx.rect(PBOX.x, PBOX.y, PBOX.w, PBOX.h);
       ctx.clip();
 
-      const sc  = Math.max(PBOX.w / photo.naturalWidth, PBOX.h / photo.naturalHeight);
-      const sw  = photo.naturalWidth  * sc;
-      const sh  = photo.naturalHeight * sc;
-      const bx  = PBOX.x + (PBOX.w - sw) / 2;
-      const by  = PBOX.y + (PBOX.h - sh) / 2;
+      const sc = Math.max(PBOX.w / photo.naturalWidth, PBOX.h / photo.naturalHeight);
+      const sw = photo.naturalWidth  * sc;
+      const sh = photo.naturalHeight * sc;
+      /* center horizontally; bias toward top vertically so faces show */
+      const bx = PBOX.x + (PBOX.w - sw) / 2;
+      const by = PBOX.y + (PBOX.h - sh) * 0.15;
 
       ctx.drawImage(photo, bx + photoOffset.x, by + photoOffset.y, sw, sh);
       ctx.restore();
     }
 
-    /* 3. name text */
+    /* 3. name text — auto-sizes to fill the white rectangle, centred */
     if (name.trim() && fontsReady) {
       const upper = name.toUpperCase();
       ctx.save();
-      ctx.fillStyle   = '#0A0A0A';
+      ctx.fillStyle    = '#1A1A1A';
       ctx.textBaseline = 'middle';
+      ctx.textAlign    = 'left';
 
-      let fs = 32;
+      const pad = 18;
+      /* start at a size that fills the box height, shrink until it fits the width */
+      let fs = Math.floor(NBOX.h * 0.68); /* ~44px */
       ctx.font = `900 ${fs}px Inter, Arial, sans-serif`;
-      while (ctx.measureText(upper).width > NBOX.w - 20 && fs > 11) {
+      while (ctx.measureText(upper).width > NBOX.w - pad && fs > 10) {
         fs--;
         ctx.font = `900 ${fs}px Inter, Arial, sans-serif`;
       }
-      ctx.fillText(upper, NBOX.x + 12, NBOX.y + NBOX.h / 2);
+      /* centre the text horizontally within the box */
+      const tw = ctx.measureText(upper).width;
+      const tx = NBOX.x + (NBOX.w - tw) / 2;
+      ctx.fillText(upper, tx, NBOX.y + NBOX.h / 2);
       ctx.restore();
     }
   }, [templateImg, photo, photoOffset, name, fontsReady]);
@@ -378,7 +385,7 @@ function App() {
                     </div>
                     <div className="flex-1 min-w-0">
                       <p className="font-semibold text-sm text-[#0A0A0A]">Photo ready</p>
-                      {!isTouch && <p className="text-xs text-[#0A0A0A]/40 mt-0.5">Drag on the preview to reposition</p>}
+                      {!isTouch && <p className="text-xs text-[#0A0A0A]/40 mt-0.5">Auto-fitted · drag the preview to adjust if needed</p>}
                     </div>
                     <button
                       onClick={() => { setPhoto(null); setPhotoOffset({ x:0, y:0 }); if (fileInputRef.current) fileInputRef.current.value = ''; }}
